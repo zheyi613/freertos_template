@@ -1,0 +1,1083 @@
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"SEGGER_SYSVIEW_FreeRTOS.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text._cbGetTime,"ax",%progbits
+  20              		.align	1
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	_cbGetTime:
+  26              	.LFB6:
+  27              		.file 1 "SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c"
+   1:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** /*********************************************************************
+   2:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *                    SEGGER Microcontroller GmbH                     *
+   3:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *                        The Embedded Experts                        *
+   4:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** **********************************************************************
+   5:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *                                                                    *
+   6:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *            (c) 1995 - 2021 SEGGER Microcontroller GmbH             *
+   7:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *                                                                    *
+   8:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *       www.segger.com     Support: support@segger.com               *
+   9:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *                                                                    *
+  10:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** **********************************************************************
+  11:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *                                                                    *
+  12:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *       SEGGER SystemView * Real-time application analysis           *
+  13:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *                                                                    *
+  14:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** **********************************************************************
+  15:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *                                                                    *
+  16:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * All rights reserved.                                               *
+  17:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *                                                                    *
+  18:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * SEGGER strongly recommends to not make any changes                 *
+  19:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * to or modify the source code of this software in order to stay     *
+  20:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * compatible with the SystemView and RTT protocol, and J-Link.       *
+  21:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *                                                                    *
+  22:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * Redistribution and use in source and binary forms, with or         *
+  23:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * without modification, are permitted provided that the following    *
+  24:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * condition is met:                                                  *
+  25:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *                                                                    *
+  26:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * o Redistributions of source code must retain the above copyright   *
+  27:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *   notice, this condition and the following disclaimer.             *
+  28:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *                                                                    *
+  29:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND             *
+  30:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,        *
+  31:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF           *
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s 			page 2
+
+
+  32:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE           *
+  33:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * DISCLAIMED. IN NO EVENT SHALL SEGGER Microcontroller BE LIABLE FOR *
+  34:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR           *
+  35:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT  *
+  36:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;    *
+  37:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF      *
+  38:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT          *
+  39:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE  *
+  40:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH   *
+  41:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** * DAMAGE.                                                            *
+  42:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *                                                                    *
+  43:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** **********************************************************************
+  44:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *                                                                    *
+  45:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *       SystemView version: 3.32                                    *
+  46:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *                                                                    *
+  47:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** **********************************************************************
+  48:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** -------------------------- END-OF-HEADER -----------------------------
+  49:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+  50:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** File    : SEGGER_SYSVIEW_FreeRTOS.c
+  51:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** Purpose : Interface between FreeRTOS and SystemView.
+  52:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** Revision: $Rev: 7947 $
+  53:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** */
+  54:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** #include "FreeRTOS.h"
+  55:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** #include "task.h"
+  56:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** #include "SEGGER_SYSVIEW.h"
+  57:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** #include "SEGGER_SYSVIEW_FreeRTOS.h"
+  58:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** #include "string.h" // Required for memset
+  59:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+  60:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+  61:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+  62:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** typedef struct SYSVIEW_FREERTOS_TASK_STATUS SYSVIEW_FREERTOS_TASK_STATUS;
+  63:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+  64:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** struct SYSVIEW_FREERTOS_TASK_STATUS {
+  65:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   U32         xHandle;
+  66:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   const char* pcTaskName;
+  67:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   unsigned    uxCurrentPriority;
+  68:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   U32         pxStack;
+  69:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   unsigned    uStackHighWaterMark;
+  70:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** };
+  71:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+  72:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** static SYSVIEW_FREERTOS_TASK_STATUS _aTasks[SYSVIEW_FREERTOS_MAX_NOF_TASKS];
+  73:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** static unsigned _NumTasks;
+  74:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+  75:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** /*********************************************************************
+  76:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *
+  77:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *       _cbSendTaskList()
+  78:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *
+  79:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *  Function description
+  80:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *    This function is part of the link between FreeRTOS and SYSVIEW.
+  81:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *    Called from SystemView when asked by the host, it uses SYSVIEW
+  82:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *    functions to send the entire task list to the host.
+  83:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** */
+  84:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** static void _cbSendTaskList(void) {
+  85:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   unsigned n;
+  86:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+  87:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   for (n = 0; n < _NumTasks; n++) {
+  88:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** #if INCLUDE_uxTaskGetStackHighWaterMark // Report Task Stack High Watermark
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s 			page 3
+
+
+  89:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].uStackHighWaterMark = uxTaskGetStackHighWaterMark((TaskHandle_t)_aTasks[n].xHandle);
+  90:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** #endif
+  91:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     SYSVIEW_SendTaskInfo((U32)_aTasks[n].xHandle, _aTasks[n].pcTaskName, (unsigned)_aTasks[n].uxCur
+  92:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   }
+  93:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** }
+  94:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+  95:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** /*********************************************************************
+  96:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *
+  97:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *       _cbGetTime()
+  98:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *
+  99:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *  Function description
+ 100:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *    This function is part of the link between FreeRTOS and SYSVIEW.
+ 101:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *    Called from SystemView when asked by the host, returns the
+ 102:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *    current system time in micro seconds.
+ 103:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** */
+ 104:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** static U64 _cbGetTime(void) {
+  28              		.loc 1 104 29 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 08B5     		push	{r3, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 3, -8
+  36              		.cfi_offset 14, -4
+ 105:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   U64 Time;
+  37              		.loc 1 105 3 view .LVU1
+ 106:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 107:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   Time = xTaskGetTickCountFromISR();
+  38              		.loc 1 107 3 view .LVU2
+  39              		.loc 1 107 10 is_stmt 0 view .LVU3
+  40 0002 FFF7FEFF 		bl	xTaskGetTickCountFromISR
+  41              	.LVL0:
+ 108:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   Time *= portTICK_PERIOD_MS;
+  42              		.loc 1 108 3 is_stmt 1 view .LVU4
+ 109:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   Time *= 1000;
+  43              		.loc 1 109 3 view .LVU5
+  44              		.loc 1 109 8 is_stmt 0 view .LVU6
+  45 0006 C30E     		lsrs	r3, r0, #27
+  46 0008 4101     		lsls	r1, r0, #5
+  47 000a 091A     		subs	r1, r1, r0
+  48 000c 63F10003 		sbc	r3, r3, #0
+  49 0010 9B00     		lsls	r3, r3, #2
+  50 0012 43EA9173 		orr	r3, r3, r1, lsr #30
+  51 0016 8900     		lsls	r1, r1, #2
+  52 0018 0918     		adds	r1, r1, r0
+  53 001a 43F10003 		adc	r3, r3, #0
+  54 001e 1B01     		lsls	r3, r3, #4
+  55              	.LVL1:
+ 110:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   return Time;
+  56              		.loc 1 110 3 is_stmt 1 view .LVU7
+ 111:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** }
+  57              		.loc 1 111 1 is_stmt 0 view .LVU8
+  58 0020 0801     		lsls	r0, r1, #4
+  59 0022 43EA1171 		orr	r1, r3, r1, lsr #28
+  60              	.LVL2:
+  61              		.loc 1 111 1 view .LVU9
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s 			page 4
+
+
+  62 0026 08BD     		pop	{r3, pc}
+  63              		.cfi_endproc
+  64              	.LFE6:
+  66              		.section	.text.SYSVIEW_DeleteTask,"ax",%progbits
+  67              		.align	1
+  68              		.global	SYSVIEW_DeleteTask
+  69              		.syntax unified
+  70              		.thumb
+  71              		.thumb_func
+  73              	SYSVIEW_DeleteTask:
+  74              	.LVL3:
+  75              	.LFB9:
+ 112:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 113:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** /*********************************************************************
+ 114:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *
+ 115:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *       Global functions
+ 116:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *
+ 117:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** **********************************************************************
+ 118:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** */
+ 119:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** /*********************************************************************
+ 120:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *
+ 121:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *       SYSVIEW_AddTask()
+ 122:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *
+ 123:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *  Function description
+ 124:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *    Add a task to the internal list and record its information.
+ 125:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** */
+ 126:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** void SYSVIEW_AddTask(U32 xHandle, const char* pcTaskName, unsigned uxCurrentPriority, U32  pxStack,
+ 127:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   
+ 128:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   if (memcmp(pcTaskName, "IDLE", 5) == 0) {
+ 129:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     return;
+ 130:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   }
+ 131:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   
+ 132:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   if (_NumTasks >= SYSVIEW_FREERTOS_MAX_NOF_TASKS) {
+ 133:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     SEGGER_SYSVIEW_Warn("SYSTEMVIEW: Could not record task information. Maximum number of tasks rea
+ 134:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     return;
+ 135:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   }
+ 136:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 137:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   _aTasks[_NumTasks].xHandle = xHandle;
+ 138:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   _aTasks[_NumTasks].pcTaskName = pcTaskName;
+ 139:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   _aTasks[_NumTasks].uxCurrentPriority = uxCurrentPriority;
+ 140:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   _aTasks[_NumTasks].pxStack = pxStack;
+ 141:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   _aTasks[_NumTasks].uStackHighWaterMark = uStackHighWaterMark;
+ 142:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 143:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   _NumTasks++;
+ 144:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 145:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   SYSVIEW_SendTaskInfo(xHandle, pcTaskName,uxCurrentPriority, pxStack, uStackHighWaterMark);
+ 146:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 147:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** }
+ 148:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 149:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** /*********************************************************************
+ 150:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *
+ 151:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *       SYSVIEW_UpdateTask()
+ 152:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *
+ 153:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *  Function description
+ 154:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *    Update a task in the internal list and record its information.
+ 155:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** */
+ 156:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** void SYSVIEW_UpdateTask(U32 xHandle, const char* pcTaskName, unsigned uxCurrentPriority, U32 pxStac
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s 			page 5
+
+
+ 157:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   unsigned n;
+ 158:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   
+ 159:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   if (memcmp(pcTaskName, "IDLE", 5) == 0) {
+ 160:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     return;
+ 161:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   }
+ 162:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 163:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   for (n = 0; n < _NumTasks; n++) {
+ 164:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     if (_aTasks[n].xHandle == xHandle) {
+ 165:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****       break;
+ 166:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     }
+ 167:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   }
+ 168:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   if (n < _NumTasks) {
+ 169:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].pcTaskName = pcTaskName;
+ 170:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].uxCurrentPriority = uxCurrentPriority;
+ 171:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].pxStack = pxStack;
+ 172:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].uStackHighWaterMark = uStackHighWaterMark;
+ 173:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 174:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     SYSVIEW_SendTaskInfo(xHandle, pcTaskName, uxCurrentPriority, pxStack, uStackHighWaterMark);
+ 175:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   } else {
+ 176:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     SYSVIEW_AddTask(xHandle, pcTaskName, uxCurrentPriority, pxStack, uStackHighWaterMark);
+ 177:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   }
+ 178:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** }
+ 179:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 180:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** /*********************************************************************
+ 181:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *
+ 182:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *       SYSVIEW_DeleteTask()
+ 183:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *
+ 184:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *  Function description
+ 185:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *    Delete a task from the internal list.
+ 186:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** */
+ 187:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** void SYSVIEW_DeleteTask(U32 xHandle) {
+  76              		.loc 1 187 38 is_stmt 1 view -0
+  77              		.cfi_startproc
+  78              		@ args = 0, pretend = 0, frame = 0
+  79              		@ frame_needed = 0, uses_anonymous_args = 0
+  80              		@ link register save eliminated.
+  81              		.loc 1 187 38 is_stmt 0 view .LVU11
+  82 0000 70B4     		push	{r4, r5, r6}
+  83              	.LCFI1:
+  84              		.cfi_def_cfa_offset 12
+  85              		.cfi_offset 4, -12
+  86              		.cfi_offset 5, -8
+  87              		.cfi_offset 6, -4
+ 188:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   unsigned n;
+  88              		.loc 1 188 3 is_stmt 1 view .LVU12
+ 189:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   
+ 190:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   if (_NumTasks == 0) {
+  89              		.loc 1 190 3 view .LVU13
+  90              		.loc 1 190 17 is_stmt 0 view .LVU14
+  91 0002 254B     		ldr	r3, .L12
+  92 0004 1C68     		ldr	r4, [r3]
+  93              		.loc 1 190 6 view .LVU15
+  94 0006 84B1     		cbz	r4, .L3
+ 191:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     return; // Early out
+ 192:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   }  
+ 193:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   for (n = 0; n < _NumTasks; n++) {
+  95              		.loc 1 193 10 view .LVU16
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s 			page 6
+
+
+  96 0008 0023     		movs	r3, #0
+  97              	.L5:
+  98              	.LVL4:
+  99              		.loc 1 193 15 is_stmt 1 discriminator 1 view .LVU17
+ 100              		.loc 1 193 3 is_stmt 0 discriminator 1 view .LVU18
+ 101 000a 9C42     		cmp	r4, r3
+ 102 000c 08D9     		bls	.L6
+ 194:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     if (_aTasks[n].xHandle == xHandle) {
+ 103              		.loc 1 194 5 is_stmt 1 view .LVU19
+ 104              		.loc 1 194 19 is_stmt 0 view .LVU20
+ 105 000e 03EB8302 		add	r2, r3, r3, lsl #2
+ 106 0012 2249     		ldr	r1, .L12+4
+ 107 0014 51F82220 		ldr	r2, [r1, r2, lsl #2]
+ 108              		.loc 1 194 8 view .LVU21
+ 109 0018 8242     		cmp	r2, r0
+ 110 001a 01D0     		beq	.L6
+ 193:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     if (_aTasks[n].xHandle == xHandle) {
+ 111              		.loc 1 193 30 is_stmt 1 discriminator 2 view .LVU22
+ 193:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     if (_aTasks[n].xHandle == xHandle) {
+ 112              		.loc 1 193 31 is_stmt 0 discriminator 2 view .LVU23
+ 113 001c 0133     		adds	r3, r3, #1
+ 114              	.LVL5:
+ 193:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     if (_aTasks[n].xHandle == xHandle) {
+ 115              		.loc 1 193 31 discriminator 2 view .LVU24
+ 116 001e F4E7     		b	.L5
+ 117              	.L6:
+ 195:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****       break;
+ 196:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     }
+ 197:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   }
+ 198:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   if (n == (_NumTasks - 1)) {  
+ 118              		.loc 1 198 3 is_stmt 1 view .LVU25
+ 119              		.loc 1 198 23 is_stmt 0 view .LVU26
+ 120 0020 651E     		subs	r5, r4, #1
+ 121              		.loc 1 198 6 view .LVU27
+ 122 0022 9D42     		cmp	r5, r3
+ 123 0024 03D0     		beq	.L10
+ 199:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     //
+ 200:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     // Task is last item in list.
+ 201:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     // Simply zero the item and decrement number of tasks.
+ 202:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     //
+ 203:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     memset(&_aTasks[n], 0, sizeof(_aTasks[n]));
+ 204:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _NumTasks--;
+ 205:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   } else if (n < _NumTasks) {
+ 124              		.loc 1 205 10 is_stmt 1 view .LVU28
+ 125              		.loc 1 205 13 is_stmt 0 view .LVU29
+ 126 0026 9C42     		cmp	r4, r3
+ 127 0028 10D8     		bhi	.L11
+ 128              	.LVL6:
+ 129              	.L3:
+ 206:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     //
+ 207:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     // Task is in the middle of the list.
+ 208:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     // Move last item to current position and decrement number of tasks.
+ 209:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     // Order of tasks does not really matter, so no need to move all following items.
+ 210:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     //
+ 211:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].xHandle             = _aTasks[_NumTasks - 1].xHandle;
+ 212:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].pcTaskName          = _aTasks[_NumTasks - 1].pcTaskName;
+ 213:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].uxCurrentPriority   = _aTasks[_NumTasks - 1].uxCurrentPriority;
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s 			page 7
+
+
+ 214:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].pxStack             = _aTasks[_NumTasks - 1].pxStack;
+ 215:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].uStackHighWaterMark = _aTasks[_NumTasks - 1].uStackHighWaterMark;
+ 216:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     memset(&_aTasks[_NumTasks - 1], 0, sizeof(_aTasks[_NumTasks - 1]));
+ 217:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _NumTasks--;
+ 218:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   }
+ 219:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** }
+ 130              		.loc 1 219 1 view .LVU30
+ 131 002a 70BC     		pop	{r4, r5, r6}
+ 132              	.LCFI2:
+ 133              		.cfi_remember_state
+ 134              		.cfi_restore 6
+ 135              		.cfi_restore 5
+ 136              		.cfi_restore 4
+ 137              		.cfi_def_cfa_offset 0
+ 138 002c 7047     		bx	lr
+ 139              	.LVL7:
+ 140              	.L10:
+ 141              	.LCFI3:
+ 142              		.cfi_restore_state
+ 203:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _NumTasks--;
+ 143              		.loc 1 203 5 is_stmt 1 view .LVU31
+ 203:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _NumTasks--;
+ 144              		.loc 1 203 12 is_stmt 0 view .LVU32
+ 145 002e 1B48     		ldr	r0, .L12+4
+ 146              	.LVL8:
+ 203:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _NumTasks--;
+ 147              		.loc 1 203 12 view .LVU33
+ 148 0030 03EB8303 		add	r3, r3, r3, lsl #2
+ 149              	.LVL9:
+ 203:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _NumTasks--;
+ 150              		.loc 1 203 12 view .LVU34
+ 151 0034 00EB8301 		add	r1, r0, r3, lsl #2
+ 203:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _NumTasks--;
+ 152              		.loc 1 203 5 view .LVU35
+ 153 0038 0022     		movs	r2, #0
+ 154 003a 40F82320 		str	r2, [r0, r3, lsl #2]	@ unaligned
+ 155 003e 4A60     		str	r2, [r1, #4]	@ unaligned
+ 156 0040 8A60     		str	r2, [r1, #8]	@ unaligned
+ 157 0042 CA60     		str	r2, [r1, #12]	@ unaligned
+ 158 0044 0A61     		str	r2, [r1, #16]	@ unaligned
+ 204:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   } else if (n < _NumTasks) {
+ 159              		.loc 1 204 5 is_stmt 1 view .LVU36
+ 204:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   } else if (n < _NumTasks) {
+ 160              		.loc 1 204 14 is_stmt 0 view .LVU37
+ 161 0046 144B     		ldr	r3, .L12
+ 162 0048 1D60     		str	r5, [r3]
+ 163 004a EEE7     		b	.L3
+ 164              	.LVL10:
+ 165              	.L11:
+ 211:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].pcTaskName          = _aTasks[_NumTasks - 1].pcTaskName;
+ 166              		.loc 1 211 5 is_stmt 1 view .LVU38
+ 211:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].pcTaskName          = _aTasks[_NumTasks - 1].pcTaskName;
+ 167              		.loc 1 211 60 is_stmt 0 view .LVU39
+ 168 004c 134C     		ldr	r4, .L12+4
+ 169 004e 05EB8502 		add	r2, r5, r5, lsl #2
+ 170 0052 4FEA820C 		lsl	ip, r2, #2
+ 171 0056 04EB8202 		add	r2, r4, r2, lsl #2
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s 			page 8
+
+
+ 211:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].pcTaskName          = _aTasks[_NumTasks - 1].pcTaskName;
+ 172              		.loc 1 211 36 view .LVU40
+ 173 005a 03EB8300 		add	r0, r3, r3, lsl #2
+ 174              	.LVL11:
+ 211:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].pcTaskName          = _aTasks[_NumTasks - 1].pcTaskName;
+ 175              		.loc 1 211 36 view .LVU41
+ 176 005e 04EB8001 		add	r1, r4, r0, lsl #2
+ 177 0062 54F80C60 		ldr	r6, [r4, ip]
+ 178 0066 44F82060 		str	r6, [r4, r0, lsl #2]
+ 212:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].uxCurrentPriority   = _aTasks[_NumTasks - 1].uxCurrentPriority;
+ 179              		.loc 1 212 5 is_stmt 1 view .LVU42
+ 212:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].uxCurrentPriority   = _aTasks[_NumTasks - 1].uxCurrentPriority;
+ 180              		.loc 1 212 60 is_stmt 0 view .LVU43
+ 181 006a 5068     		ldr	r0, [r2, #4]
+ 212:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].uxCurrentPriority   = _aTasks[_NumTasks - 1].uxCurrentPriority;
+ 182              		.loc 1 212 36 view .LVU44
+ 183 006c 4860     		str	r0, [r1, #4]
+ 213:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].pxStack             = _aTasks[_NumTasks - 1].pxStack;
+ 184              		.loc 1 213 5 is_stmt 1 view .LVU45
+ 213:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].pxStack             = _aTasks[_NumTasks - 1].pxStack;
+ 185              		.loc 1 213 60 is_stmt 0 view .LVU46
+ 186 006e 9068     		ldr	r0, [r2, #8]
+ 213:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].pxStack             = _aTasks[_NumTasks - 1].pxStack;
+ 187              		.loc 1 213 36 view .LVU47
+ 188 0070 8860     		str	r0, [r1, #8]
+ 214:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].uStackHighWaterMark = _aTasks[_NumTasks - 1].uStackHighWaterMark;
+ 189              		.loc 1 214 5 is_stmt 1 view .LVU48
+ 214:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].uStackHighWaterMark = _aTasks[_NumTasks - 1].uStackHighWaterMark;
+ 190              		.loc 1 214 60 is_stmt 0 view .LVU49
+ 191 0072 D068     		ldr	r0, [r2, #12]
+ 214:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].uStackHighWaterMark = _aTasks[_NumTasks - 1].uStackHighWaterMark;
+ 192              		.loc 1 214 36 view .LVU50
+ 193 0074 C860     		str	r0, [r1, #12]
+ 215:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     memset(&_aTasks[_NumTasks - 1], 0, sizeof(_aTasks[_NumTasks - 1]));
+ 194              		.loc 1 215 5 is_stmt 1 view .LVU51
+ 215:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     memset(&_aTasks[_NumTasks - 1], 0, sizeof(_aTasks[_NumTasks - 1]));
+ 195              		.loc 1 215 60 is_stmt 0 view .LVU52
+ 196 0076 1169     		ldr	r1, [r2, #16]
+ 215:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     memset(&_aTasks[_NumTasks - 1], 0, sizeof(_aTasks[_NumTasks - 1]));
+ 197              		.loc 1 215 36 view .LVU53
+ 198 0078 03EB8303 		add	r3, r3, r3, lsl #2
+ 199              	.LVL12:
+ 215:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     memset(&_aTasks[_NumTasks - 1], 0, sizeof(_aTasks[_NumTasks - 1]));
+ 200              		.loc 1 215 36 view .LVU54
+ 201 007c 04EB8303 		add	r3, r4, r3, lsl #2
+ 202 0080 1961     		str	r1, [r3, #16]
+ 216:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _NumTasks--;
+ 203              		.loc 1 216 5 is_stmt 1 view .LVU55
+ 204 0082 0023     		movs	r3, #0
+ 205 0084 44F80C30 		str	r3, [r4, ip]	@ unaligned
+ 206 0088 5360     		str	r3, [r2, #4]	@ unaligned
+ 207 008a 9360     		str	r3, [r2, #8]	@ unaligned
+ 208 008c D360     		str	r3, [r2, #12]	@ unaligned
+ 209 008e 1361     		str	r3, [r2, #16]	@ unaligned
+ 217:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   }
+ 210              		.loc 1 217 5 view .LVU56
+ 217:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   }
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s 			page 9
+
+
+ 211              		.loc 1 217 14 is_stmt 0 view .LVU57
+ 212 0090 014B     		ldr	r3, .L12
+ 213 0092 1D60     		str	r5, [r3]
+ 214 0094 C9E7     		b	.L3
+ 215              	.L13:
+ 216 0096 00BF     		.align	2
+ 217              	.L12:
+ 218 0098 00000000 		.word	.LANCHOR0
+ 219 009c 00000000 		.word	.LANCHOR1
+ 220              		.cfi_endproc
+ 221              	.LFE9:
+ 223              		.section	.text.SYSVIEW_SendTaskInfo,"ax",%progbits
+ 224              		.align	1
+ 225              		.global	SYSVIEW_SendTaskInfo
+ 226              		.syntax unified
+ 227              		.thumb
+ 228              		.thumb_func
+ 230              	SYSVIEW_SendTaskInfo:
+ 231              	.LVL13:
+ 232              	.LFB10:
+ 220:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 221:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** /*********************************************************************
+ 222:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *
+ 223:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *       SYSVIEW_SendTaskInfo()
+ 224:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *
+ 225:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *  Function description
+ 226:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** *    Record task information.
+ 227:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** */
+ 228:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** void SYSVIEW_SendTaskInfo(U32 TaskID, const char* sName, unsigned Prio, U32 StackBase, unsigned Sta
+ 233              		.loc 1 228 108 is_stmt 1 view -0
+ 234              		.cfi_startproc
+ 235              		@ args = 4, pretend = 0, frame = 24
+ 236              		@ frame_needed = 0, uses_anonymous_args = 0
+ 237              		.loc 1 228 108 is_stmt 0 view .LVU59
+ 238 0000 10B5     		push	{r4, lr}
+ 239              	.LCFI4:
+ 240              		.cfi_def_cfa_offset 8
+ 241              		.cfi_offset 4, -8
+ 242              		.cfi_offset 14, -4
+ 243 0002 86B0     		sub	sp, sp, #24
+ 244              	.LCFI5:
+ 245              		.cfi_def_cfa_offset 32
+ 229:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   SEGGER_SYSVIEW_TASKINFO TaskInfo;
+ 246              		.loc 1 229 3 is_stmt 1 view .LVU60
+ 230:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 231:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   memset(&TaskInfo, 0, sizeof(TaskInfo)); // Fill all elements with 0 to allow extending the struct
+ 247              		.loc 1 231 3 view .LVU61
+ 248 0004 0024     		movs	r4, #0
+ 249 0006 0194     		str	r4, [sp, #4]
+ 250 0008 0294     		str	r4, [sp, #8]
+ 251 000a 0394     		str	r4, [sp, #12]
+ 252 000c 0494     		str	r4, [sp, #16]
+ 253 000e 0594     		str	r4, [sp, #20]
+ 232:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   TaskInfo.TaskID     = TaskID;
+ 254              		.loc 1 232 3 view .LVU62
+ 255              		.loc 1 232 23 is_stmt 0 view .LVU63
+ 256 0010 0190     		str	r0, [sp, #4]
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s 			page 10
+
+
+ 233:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   TaskInfo.sName      = sName;
+ 257              		.loc 1 233 3 is_stmt 1 view .LVU64
+ 258              		.loc 1 233 23 is_stmt 0 view .LVU65
+ 259 0012 0291     		str	r1, [sp, #8]
+ 234:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   TaskInfo.Prio       = Prio;
+ 260              		.loc 1 234 3 is_stmt 1 view .LVU66
+ 261              		.loc 1 234 23 is_stmt 0 view .LVU67
+ 262 0014 0392     		str	r2, [sp, #12]
+ 235:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   TaskInfo.StackBase  = StackBase;
+ 263              		.loc 1 235 3 is_stmt 1 view .LVU68
+ 264              		.loc 1 235 23 is_stmt 0 view .LVU69
+ 265 0016 0493     		str	r3, [sp, #16]
+ 236:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   TaskInfo.StackSize  = StackSize;
+ 266              		.loc 1 236 3 is_stmt 1 view .LVU70
+ 267              		.loc 1 236 23 is_stmt 0 view .LVU71
+ 268 0018 089B     		ldr	r3, [sp, #32]
+ 269              	.LVL14:
+ 270              		.loc 1 236 23 view .LVU72
+ 271 001a 0593     		str	r3, [sp, #20]
+ 237:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   SEGGER_SYSVIEW_SendTaskInfo(&TaskInfo);
+ 272              		.loc 1 237 3 is_stmt 1 view .LVU73
+ 273 001c 01A8     		add	r0, sp, #4
+ 274              	.LVL15:
+ 275              		.loc 1 237 3 is_stmt 0 view .LVU74
+ 276 001e FFF7FEFF 		bl	SEGGER_SYSVIEW_SendTaskInfo
+ 277              	.LVL16:
+ 238:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** }
+ 278              		.loc 1 238 1 view .LVU75
+ 279 0022 06B0     		add	sp, sp, #24
+ 280              	.LCFI6:
+ 281              		.cfi_def_cfa_offset 8
+ 282              		@ sp needed
+ 283 0024 10BD     		pop	{r4, pc}
+ 284              		.loc 1 238 1 view .LVU76
+ 285              		.cfi_endproc
+ 286              	.LFE10:
+ 288              		.section	.rodata.SYSVIEW_AddTask.str1.4,"aMS",%progbits,1
+ 289              		.align	2
+ 290              	.LC0:
+ 291 0000 49444C45 		.ascii	"IDLE\000"
+ 291      00
+ 292 0005 000000   		.align	2
+ 293              	.LC1:
+ 294 0008 53595354 		.ascii	"SYSTEMVIEW: Could not record task information. Maxi"
+ 294      454D5649 
+ 294      45573A20 
+ 294      436F756C 
+ 294      64206E6F 
+ 295 003b 6D756D20 		.ascii	"mum number of tasks reached.\000"
+ 295      6E756D62 
+ 295      6572206F 
+ 295      66207461 
+ 295      736B7320 
+ 296              		.section	.text.SYSVIEW_AddTask,"ax",%progbits
+ 297              		.align	1
+ 298              		.global	SYSVIEW_AddTask
+ 299              		.syntax unified
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s 			page 11
+
+
+ 300              		.thumb
+ 301              		.thumb_func
+ 303              	SYSVIEW_AddTask:
+ 304              	.LVL17:
+ 305              	.LFB7:
+ 126:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   
+ 306              		.loc 1 126 131 is_stmt 1 view -0
+ 307              		.cfi_startproc
+ 308              		@ args = 4, pretend = 0, frame = 0
+ 309              		@ frame_needed = 0, uses_anonymous_args = 0
+ 126:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   
+ 310              		.loc 1 126 131 is_stmt 0 view .LVU78
+ 311 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 312              	.LCFI7:
+ 313              		.cfi_def_cfa_offset 20
+ 314              		.cfi_offset 4, -20
+ 315              		.cfi_offset 5, -16
+ 316              		.cfi_offset 6, -12
+ 317              		.cfi_offset 7, -8
+ 318              		.cfi_offset 14, -4
+ 319 0002 83B0     		sub	sp, sp, #12
+ 320              	.LCFI8:
+ 321              		.cfi_def_cfa_offset 32
+ 322 0004 0546     		mov	r5, r0
+ 323 0006 0C46     		mov	r4, r1
+ 324 0008 1646     		mov	r6, r2
+ 325 000a 1F46     		mov	r7, r3
+ 128:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     return;
+ 326              		.loc 1 128 3 is_stmt 1 view .LVU79
+ 128:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     return;
+ 327              		.loc 1 128 7 is_stmt 0 view .LVU80
+ 328 000c 0522     		movs	r2, #5
+ 329              	.LVL18:
+ 128:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     return;
+ 330              		.loc 1 128 7 view .LVU81
+ 331 000e 1349     		ldr	r1, .L21
+ 332              	.LVL19:
+ 128:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     return;
+ 333              		.loc 1 128 7 view .LVU82
+ 334 0010 2046     		mov	r0, r4
+ 335              	.LVL20:
+ 128:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     return;
+ 336              		.loc 1 128 7 view .LVU83
+ 337 0012 FFF7FEFF 		bl	memcmp
+ 338              	.LVL21:
+ 128:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     return;
+ 339              		.loc 1 128 6 view .LVU84
+ 340 0016 D0B1     		cbz	r0, .L16
+ 132:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     SEGGER_SYSVIEW_Warn("SYSTEMVIEW: Could not record task information. Maximum number of tasks rea
+ 341              		.loc 1 132 3 is_stmt 1 view .LVU85
+ 132:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     SEGGER_SYSVIEW_Warn("SYSTEMVIEW: Could not record task information. Maximum number of tasks rea
+ 342              		.loc 1 132 17 is_stmt 0 view .LVU86
+ 343 0018 114B     		ldr	r3, .L21+4
+ 344 001a 1A68     		ldr	r2, [r3]
+ 132:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     SEGGER_SYSVIEW_Warn("SYSTEMVIEW: Could not record task information. Maximum number of tasks rea
+ 345              		.loc 1 132 6 view .LVU87
+ 346 001c 072A     		cmp	r2, #7
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s 			page 12
+
+
+ 347 001e 18D8     		bhi	.L20
+ 137:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   _aTasks[_NumTasks].pcTaskName = pcTaskName;
+ 348              		.loc 1 137 3 is_stmt 1 view .LVU88
+ 137:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   _aTasks[_NumTasks].pcTaskName = pcTaskName;
+ 349              		.loc 1 137 30 is_stmt 0 view .LVU89
+ 350 0020 104B     		ldr	r3, .L21+8
+ 351 0022 02EB8200 		add	r0, r2, r2, lsl #2
+ 352 0026 03EB8001 		add	r1, r3, r0, lsl #2
+ 353 002a 43F82050 		str	r5, [r3, r0, lsl #2]
+ 138:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   _aTasks[_NumTasks].uxCurrentPriority = uxCurrentPriority;
+ 354              		.loc 1 138 3 is_stmt 1 view .LVU90
+ 138:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   _aTasks[_NumTasks].uxCurrentPriority = uxCurrentPriority;
+ 355              		.loc 1 138 33 is_stmt 0 view .LVU91
+ 356 002e 4C60     		str	r4, [r1, #4]
+ 139:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   _aTasks[_NumTasks].pxStack = pxStack;
+ 357              		.loc 1 139 3 is_stmt 1 view .LVU92
+ 139:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   _aTasks[_NumTasks].pxStack = pxStack;
+ 358              		.loc 1 139 40 is_stmt 0 view .LVU93
+ 359 0030 8E60     		str	r6, [r1, #8]
+ 140:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   _aTasks[_NumTasks].uStackHighWaterMark = uStackHighWaterMark;
+ 360              		.loc 1 140 3 is_stmt 1 view .LVU94
+ 140:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   _aTasks[_NumTasks].uStackHighWaterMark = uStackHighWaterMark;
+ 361              		.loc 1 140 30 is_stmt 0 view .LVU95
+ 362 0032 CF60     		str	r7, [r1, #12]
+ 141:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 363              		.loc 1 141 3 is_stmt 1 view .LVU96
+ 141:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 364              		.loc 1 141 42 is_stmt 0 view .LVU97
+ 365 0034 089B     		ldr	r3, [sp, #32]
+ 366 0036 0B61     		str	r3, [r1, #16]
+ 143:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 367              		.loc 1 143 3 is_stmt 1 view .LVU98
+ 143:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 368              		.loc 1 143 12 is_stmt 0 view .LVU99
+ 369 0038 0132     		adds	r2, r2, #1
+ 370 003a 094B     		ldr	r3, .L21+4
+ 371 003c 1A60     		str	r2, [r3]
+ 145:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 372              		.loc 1 145 3 is_stmt 1 view .LVU100
+ 373 003e 089B     		ldr	r3, [sp, #32]
+ 374 0040 0093     		str	r3, [sp]
+ 375 0042 3B46     		mov	r3, r7
+ 376 0044 3246     		mov	r2, r6
+ 377 0046 2146     		mov	r1, r4
+ 378 0048 2846     		mov	r0, r5
+ 379 004a FFF7FEFF 		bl	SYSVIEW_SendTaskInfo
+ 380              	.LVL22:
+ 381              	.L16:
+ 147:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 382              		.loc 1 147 1 is_stmt 0 view .LVU101
+ 383 004e 03B0     		add	sp, sp, #12
+ 384              	.LCFI9:
+ 385              		.cfi_remember_state
+ 386              		.cfi_def_cfa_offset 20
+ 387              		@ sp needed
+ 388 0050 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 389              	.LVL23:
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s 			page 13
+
+
+ 390              	.L20:
+ 391              	.LCFI10:
+ 392              		.cfi_restore_state
+ 133:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     return;
+ 393              		.loc 1 133 5 is_stmt 1 view .LVU102
+ 394 0052 0548     		ldr	r0, .L21+12
+ 395 0054 FFF7FEFF 		bl	SEGGER_SYSVIEW_Warn
+ 396              	.LVL24:
+ 134:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   }
+ 397              		.loc 1 134 5 view .LVU103
+ 398 0058 F9E7     		b	.L16
+ 399              	.L22:
+ 400 005a 00BF     		.align	2
+ 401              	.L21:
+ 402 005c 00000000 		.word	.LC0
+ 403 0060 00000000 		.word	.LANCHOR0
+ 404 0064 00000000 		.word	.LANCHOR1
+ 405 0068 08000000 		.word	.LC1
+ 406              		.cfi_endproc
+ 407              	.LFE7:
+ 409              		.section	.text.SYSVIEW_UpdateTask,"ax",%progbits
+ 410              		.align	1
+ 411              		.global	SYSVIEW_UpdateTask
+ 412              		.syntax unified
+ 413              		.thumb
+ 414              		.thumb_func
+ 416              	SYSVIEW_UpdateTask:
+ 417              	.LVL25:
+ 418              	.LFB8:
+ 156:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   unsigned n;
+ 419              		.loc 1 156 133 view -0
+ 420              		.cfi_startproc
+ 421              		@ args = 4, pretend = 0, frame = 0
+ 422              		@ frame_needed = 0, uses_anonymous_args = 0
+ 156:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   unsigned n;
+ 423              		.loc 1 156 133 is_stmt 0 view .LVU105
+ 424 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 425              	.LCFI11:
+ 426              		.cfi_def_cfa_offset 20
+ 427              		.cfi_offset 4, -20
+ 428              		.cfi_offset 5, -16
+ 429              		.cfi_offset 6, -12
+ 430              		.cfi_offset 7, -8
+ 431              		.cfi_offset 14, -4
+ 432 0002 83B0     		sub	sp, sp, #12
+ 433              	.LCFI12:
+ 434              		.cfi_def_cfa_offset 32
+ 435 0004 0446     		mov	r4, r0
+ 436 0006 0D46     		mov	r5, r1
+ 437 0008 1646     		mov	r6, r2
+ 438 000a 1F46     		mov	r7, r3
+ 157:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   
+ 439              		.loc 1 157 3 is_stmt 1 view .LVU106
+ 159:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     return;
+ 440              		.loc 1 159 3 view .LVU107
+ 159:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     return;
+ 441              		.loc 1 159 7 is_stmt 0 view .LVU108
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s 			page 14
+
+
+ 442 000c 0522     		movs	r2, #5
+ 443              	.LVL26:
+ 159:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     return;
+ 444              		.loc 1 159 7 view .LVU109
+ 445 000e 1A49     		ldr	r1, .L30
+ 446              	.LVL27:
+ 159:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     return;
+ 447              		.loc 1 159 7 view .LVU110
+ 448 0010 2846     		mov	r0, r5
+ 449              	.LVL28:
+ 159:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     return;
+ 450              		.loc 1 159 7 view .LVU111
+ 451 0012 FFF7FEFF 		bl	memcmp
+ 452              	.LVL29:
+ 159:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     return;
+ 453              		.loc 1 159 6 view .LVU112
+ 454 0016 20B3     		cbz	r0, .L23
+ 163:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     if (_aTasks[n].xHandle == xHandle) {
+ 455              		.loc 1 163 10 view .LVU113
+ 456 0018 4FF0000C 		mov	ip, #0
+ 457              	.L25:
+ 458              	.LVL30:
+ 163:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     if (_aTasks[n].xHandle == xHandle) {
+ 459              		.loc 1 163 15 is_stmt 1 discriminator 1 view .LVU114
+ 163:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     if (_aTasks[n].xHandle == xHandle) {
+ 460              		.loc 1 163 17 is_stmt 0 discriminator 1 view .LVU115
+ 461 001c 174B     		ldr	r3, .L30+4
+ 462 001e 1B68     		ldr	r3, [r3]
+ 163:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     if (_aTasks[n].xHandle == xHandle) {
+ 463              		.loc 1 163 3 discriminator 1 view .LVU116
+ 464 0020 6345     		cmp	r3, ip
+ 465 0022 09D9     		bls	.L26
+ 164:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****       break;
+ 466              		.loc 1 164 5 is_stmt 1 view .LVU117
+ 164:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****       break;
+ 467              		.loc 1 164 19 is_stmt 0 view .LVU118
+ 468 0024 0CEB8C0E 		add	lr, ip, ip, lsl #2
+ 469 0028 154A     		ldr	r2, .L30+8
+ 470 002a 52F82E20 		ldr	r2, [r2, lr, lsl #2]
+ 164:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****       break;
+ 471              		.loc 1 164 8 view .LVU119
+ 472 002e A242     		cmp	r2, r4
+ 473 0030 02D0     		beq	.L26
+ 163:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     if (_aTasks[n].xHandle == xHandle) {
+ 474              		.loc 1 163 30 is_stmt 1 discriminator 2 view .LVU120
+ 163:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     if (_aTasks[n].xHandle == xHandle) {
+ 475              		.loc 1 163 31 is_stmt 0 discriminator 2 view .LVU121
+ 476 0032 0CF1010C 		add	ip, ip, #1
+ 477              	.LVL31:
+ 163:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     if (_aTasks[n].xHandle == xHandle) {
+ 478              		.loc 1 163 31 discriminator 2 view .LVU122
+ 479 0036 F1E7     		b	.L25
+ 480              	.L26:
+ 168:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].pcTaskName = pcTaskName;
+ 481              		.loc 1 168 3 is_stmt 1 view .LVU123
+ 168:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].pcTaskName = pcTaskName;
+ 482              		.loc 1 168 6 is_stmt 0 view .LVU124
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s 			page 15
+
+
+ 483 0038 6345     		cmp	r3, ip
+ 484 003a 14D9     		bls	.L28
+ 169:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].uxCurrentPriority = uxCurrentPriority;
+ 485              		.loc 1 169 5 is_stmt 1 view .LVU125
+ 169:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].uxCurrentPriority = uxCurrentPriority;
+ 486              		.loc 1 169 27 is_stmt 0 view .LVU126
+ 487 003c 104A     		ldr	r2, .L30+8
+ 488 003e 0CEB8C03 		add	r3, ip, ip, lsl #2
+ 489 0042 02EB8303 		add	r3, r2, r3, lsl #2
+ 490 0046 5D60     		str	r5, [r3, #4]
+ 170:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].pxStack = pxStack;
+ 491              		.loc 1 170 5 is_stmt 1 view .LVU127
+ 170:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].pxStack = pxStack;
+ 492              		.loc 1 170 34 is_stmt 0 view .LVU128
+ 493 0048 9E60     		str	r6, [r3, #8]
+ 171:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].uStackHighWaterMark = uStackHighWaterMark;
+ 494              		.loc 1 171 5 is_stmt 1 view .LVU129
+ 171:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****     _aTasks[n].uStackHighWaterMark = uStackHighWaterMark;
+ 495              		.loc 1 171 24 is_stmt 0 view .LVU130
+ 496 004a DF60     		str	r7, [r3, #12]
+ 172:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 497              		.loc 1 172 5 is_stmt 1 view .LVU131
+ 172:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 498              		.loc 1 172 36 is_stmt 0 view .LVU132
+ 499 004c 9C46     		mov	ip, r3
+ 500              	.LVL32:
+ 172:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 501              		.loc 1 172 36 view .LVU133
+ 502 004e 089B     		ldr	r3, [sp, #32]
+ 503 0050 CCF81030 		str	r3, [ip, #16]
+ 174:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   } else {
+ 504              		.loc 1 174 5 is_stmt 1 view .LVU134
+ 505 0054 0093     		str	r3, [sp]
+ 506 0056 3B46     		mov	r3, r7
+ 507 0058 3246     		mov	r2, r6
+ 508 005a 2946     		mov	r1, r5
+ 509 005c 2046     		mov	r0, r4
+ 510 005e FFF7FEFF 		bl	SYSVIEW_SendTaskInfo
+ 511              	.LVL33:
+ 512              	.L23:
+ 178:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 513              		.loc 1 178 1 is_stmt 0 view .LVU135
+ 514 0062 03B0     		add	sp, sp, #12
+ 515              	.LCFI13:
+ 516              		.cfi_remember_state
+ 517              		.cfi_def_cfa_offset 20
+ 518              		@ sp needed
+ 519 0064 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 520              	.LVL34:
+ 521              	.L28:
+ 522              	.LCFI14:
+ 523              		.cfi_restore_state
+ 176:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   }
+ 524              		.loc 1 176 5 is_stmt 1 view .LVU136
+ 525 0066 089B     		ldr	r3, [sp, #32]
+ 526 0068 0093     		str	r3, [sp]
+ 527 006a 3B46     		mov	r3, r7
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s 			page 16
+
+
+ 528 006c 3246     		mov	r2, r6
+ 529 006e 2946     		mov	r1, r5
+ 530 0070 2046     		mov	r0, r4
+ 531 0072 FFF7FEFF 		bl	SYSVIEW_AddTask
+ 532              	.LVL35:
+ 176:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   }
+ 533              		.loc 1 176 5 is_stmt 0 view .LVU137
+ 534 0076 F4E7     		b	.L23
+ 535              	.L31:
+ 536              		.align	2
+ 537              	.L30:
+ 538 0078 00000000 		.word	.LC0
+ 539 007c 00000000 		.word	.LANCHOR0
+ 540 0080 00000000 		.word	.LANCHOR1
+ 541              		.cfi_endproc
+ 542              	.LFE8:
+ 544              		.section	.text._cbSendTaskList,"ax",%progbits
+ 545              		.align	1
+ 546              		.syntax unified
+ 547              		.thumb
+ 548              		.thumb_func
+ 550              	_cbSendTaskList:
+ 551              	.LFB5:
+  84:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   unsigned n;
+ 552              		.loc 1 84 35 is_stmt 1 view -0
+ 553              		.cfi_startproc
+ 554              		@ args = 0, pretend = 0, frame = 0
+ 555              		@ frame_needed = 0, uses_anonymous_args = 0
+ 556 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 557              	.LCFI15:
+ 558              		.cfi_def_cfa_offset 20
+ 559              		.cfi_offset 4, -20
+ 560              		.cfi_offset 5, -16
+ 561              		.cfi_offset 6, -12
+ 562              		.cfi_offset 7, -8
+ 563              		.cfi_offset 14, -4
+ 564 0002 83B0     		sub	sp, sp, #12
+ 565              	.LCFI16:
+ 566              		.cfi_def_cfa_offset 32
+  85:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 567              		.loc 1 85 3 view .LVU139
+  87:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** #if INCLUDE_uxTaskGetStackHighWaterMark // Report Task Stack High Watermark
+ 568              		.loc 1 87 3 view .LVU140
+ 569              	.LVL36:
+  87:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** #if INCLUDE_uxTaskGetStackHighWaterMark // Report Task Stack High Watermark
+ 570              		.loc 1 87 10 is_stmt 0 view .LVU141
+ 571 0004 0025     		movs	r5, #0
+  87:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** #if INCLUDE_uxTaskGetStackHighWaterMark // Report Task Stack High Watermark
+ 572              		.loc 1 87 3 view .LVU142
+ 573 0006 11E0     		b	.L33
+ 574              	.LVL37:
+ 575              	.L34:
+  89:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** #endif
+ 576              		.loc 1 89 5 is_stmt 1 discriminator 3 view .LVU143
+  89:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** #endif
+ 577              		.loc 1 89 90 is_stmt 0 discriminator 3 view .LVU144
+ 578 0008 0B4E     		ldr	r6, .L36
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s 			page 17
+
+
+ 579 000a 05EB8504 		add	r4, r5, r5, lsl #2
+ 580 000e A700     		lsls	r7, r4, #2
+ 581 0010 06EB8404 		add	r4, r6, r4, lsl #2
+  89:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** #endif
+ 582              		.loc 1 89 38 discriminator 3 view .LVU145
+ 583 0014 F059     		ldr	r0, [r6, r7]
+ 584 0016 FFF7FEFF 		bl	uxTaskGetStackHighWaterMark
+ 585              	.LVL38:
+  89:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** #endif
+ 586              		.loc 1 89 36 discriminator 3 view .LVU146
+ 587 001a 2061     		str	r0, [r4, #16]
+  91:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c ****   }
+ 588              		.loc 1 91 5 is_stmt 1 discriminator 3 view .LVU147
+ 589 001c 0090     		str	r0, [sp]
+ 590 001e E368     		ldr	r3, [r4, #12]
+ 591 0020 A268     		ldr	r2, [r4, #8]
+ 592 0022 6168     		ldr	r1, [r4, #4]
+ 593 0024 F059     		ldr	r0, [r6, r7]
+ 594 0026 FFF7FEFF 		bl	SYSVIEW_SendTaskInfo
+ 595              	.LVL39:
+  87:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** #if INCLUDE_uxTaskGetStackHighWaterMark // Report Task Stack High Watermark
+ 596              		.loc 1 87 30 discriminator 3 view .LVU148
+  87:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** #if INCLUDE_uxTaskGetStackHighWaterMark // Report Task Stack High Watermark
+ 597              		.loc 1 87 31 is_stmt 0 discriminator 3 view .LVU149
+ 598 002a 0135     		adds	r5, r5, #1
+ 599              	.LVL40:
+ 600              	.L33:
+  87:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** #if INCLUDE_uxTaskGetStackHighWaterMark // Report Task Stack High Watermark
+ 601              		.loc 1 87 15 is_stmt 1 discriminator 1 view .LVU150
+  87:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** #if INCLUDE_uxTaskGetStackHighWaterMark // Report Task Stack High Watermark
+ 602              		.loc 1 87 17 is_stmt 0 discriminator 1 view .LVU151
+ 603 002c 034B     		ldr	r3, .L36+4
+ 604 002e 1B68     		ldr	r3, [r3]
+  87:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** #if INCLUDE_uxTaskGetStackHighWaterMark // Report Task Stack High Watermark
+ 605              		.loc 1 87 3 discriminator 1 view .LVU152
+ 606 0030 AB42     		cmp	r3, r5
+ 607 0032 E9D8     		bhi	.L34
+  93:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 608              		.loc 1 93 1 view .LVU153
+ 609 0034 03B0     		add	sp, sp, #12
+ 610              	.LCFI17:
+ 611              		.cfi_def_cfa_offset 20
+ 612              		@ sp needed
+ 613 0036 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 614              	.LVL41:
+ 615              	.L37:
+  93:SEGGER/OS/SEGGER_SYSVIEW_FreeRTOS.c **** 
+ 616              		.loc 1 93 1 view .LVU154
+ 617              		.align	2
+ 618              	.L36:
+ 619 0038 00000000 		.word	.LANCHOR1
+ 620 003c 00000000 		.word	.LANCHOR0
+ 621              		.cfi_endproc
+ 622              	.LFE5:
+ 624              		.global	SYSVIEW_X_OS_TraceAPI
+ 625              		.section	.bss._NumTasks,"aw",%nobits
+ 626              		.align	2
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s 			page 18
+
+
+ 627              		.set	.LANCHOR0,. + 0
+ 630              	_NumTasks:
+ 631 0000 00000000 		.space	4
+ 632              		.section	.bss._aTasks,"aw",%nobits
+ 633              		.align	2
+ 634              		.set	.LANCHOR1,. + 0
+ 637              	_aTasks:
+ 638 0000 00000000 		.space	160
+ 638      00000000 
+ 638      00000000 
+ 638      00000000 
+ 638      00000000 
+ 639              		.section	.rodata.SYSVIEW_X_OS_TraceAPI,"a"
+ 640              		.align	2
+ 643              	SYSVIEW_X_OS_TraceAPI:
+ 644 0000 00000000 		.word	_cbGetTime
+ 645 0004 00000000 		.word	_cbSendTaskList
+ 646              		.text
+ 647              	.Letext0:
+ 648              		.file 2 "d:\\gcc-arm-none-eabi-10.3-2021.10\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 649              		.file 3 "d:\\gcc-arm-none-eabi-10.3-2021.10\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 650              		.file 4 "SEGGER/SEGGER/SEGGER_SYSVIEW.h"
+ 651              		.file 5 "FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h"
+ 652              		.file 6 "FreeRTOS/include/task.h"
+ 653              		.file 7 "d:\\gcc-arm-none-eabi-10.3-2021.10\\arm-none-eabi\\include\\string.h"
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s 			page 19
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 SEGGER_SYSVIEW_FreeRTOS.c
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:20     .text._cbGetTime:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:25     .text._cbGetTime:00000000 _cbGetTime
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:67     .text.SYSVIEW_DeleteTask:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:73     .text.SYSVIEW_DeleteTask:00000000 SYSVIEW_DeleteTask
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:218    .text.SYSVIEW_DeleteTask:00000098 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:224    .text.SYSVIEW_SendTaskInfo:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:230    .text.SYSVIEW_SendTaskInfo:00000000 SYSVIEW_SendTaskInfo
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:289    .rodata.SYSVIEW_AddTask.str1.4:00000000 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:297    .text.SYSVIEW_AddTask:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:303    .text.SYSVIEW_AddTask:00000000 SYSVIEW_AddTask
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:402    .text.SYSVIEW_AddTask:0000005c $d
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:410    .text.SYSVIEW_UpdateTask:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:416    .text.SYSVIEW_UpdateTask:00000000 SYSVIEW_UpdateTask
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:538    .text.SYSVIEW_UpdateTask:00000078 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:545    .text._cbSendTaskList:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:550    .text._cbSendTaskList:00000000 _cbSendTaskList
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:619    .text._cbSendTaskList:00000038 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:643    .rodata.SYSVIEW_X_OS_TraceAPI:00000000 SYSVIEW_X_OS_TraceAPI
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:626    .bss._NumTasks:00000000 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:630    .bss._NumTasks:00000000 _NumTasks
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:633    .bss._aTasks:00000000 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:637    .bss._aTasks:00000000 _aTasks
+C:\Users\LINZHE~1\AppData\Local\Temp\cc3eog9d.s:640    .rodata.SYSVIEW_X_OS_TraceAPI:00000000 $d
+
+UNDEFINED SYMBOLS
+xTaskGetTickCountFromISR
+SEGGER_SYSVIEW_SendTaskInfo
+memcmp
+SEGGER_SYSVIEW_Warn
+uxTaskGetStackHighWaterMark

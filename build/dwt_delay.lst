@@ -1,0 +1,216 @@
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccv9UZRO.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"dwt_delay.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.DWT_Init,"ax",%progbits
+  20              		.align	1
+  21              		.global	DWT_Init
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	DWT_Init:
+  27              	.LFB130:
+  28              		.file 1 "Core/Src/dwt_delay.c"
+   1:Core/Src/dwt_delay.c **** /**
+   2:Core/Src/dwt_delay.c ****  * @file dwt_delay.c
+   3:Core/Src/dwt_delay.c ****  * @author zheyi613 (zheyi880613@gmail.com)
+   4:Core/Src/dwt_delay.c ****  * @brief Implement accuracy delay us with DWT
+   5:Core/Src/dwt_delay.c ****  * @date 2022-10-20
+   6:Core/Src/dwt_delay.c ****  */
+   7:Core/Src/dwt_delay.c **** 
+   8:Core/Src/dwt_delay.c **** #include "dwt_delay.h"
+   9:Core/Src/dwt_delay.c **** #include "stm32f4xx.h"
+  10:Core/Src/dwt_delay.c **** 
+  11:Core/Src/dwt_delay.c **** void DWT_Init(void)
+  12:Core/Src/dwt_delay.c **** {
+  29              		.loc 1 12 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  13:Core/Src/dwt_delay.c ****         /* Disable TRC */
+  14:Core/Src/dwt_delay.c ****         CoreDebug->DEMCR &= ~CoreDebug_DEMCR_TRCENA_Msk;
+  34              		.loc 1 14 9 view .LVU1
+  35              		.loc 1 14 26 is_stmt 0 view .LVU2
+  36 0000 0C4B     		ldr	r3, .L2
+  37 0002 D3F8FC20 		ldr	r2, [r3, #252]
+  38 0006 22F08072 		bic	r2, r2, #16777216
+  39 000a C3F8FC20 		str	r2, [r3, #252]
+  15:Core/Src/dwt_delay.c ****         /* Enable TRC */
+  16:Core/Src/dwt_delay.c ****         CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+  40              		.loc 1 16 9 is_stmt 1 view .LVU3
+  41              		.loc 1 16 26 is_stmt 0 view .LVU4
+  42 000e D3F8FC20 		ldr	r2, [r3, #252]
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccv9UZRO.s 			page 2
+
+
+  43 0012 42F08072 		orr	r2, r2, #16777216
+  44 0016 C3F8FC20 		str	r2, [r3, #252]
+  17:Core/Src/dwt_delay.c ****         /* Disable clock cycle counter */
+  18:Core/Src/dwt_delay.c ****         DWT->CTRL &= ~DWT_CTRL_CYCCNTENA_Msk;
+  45              		.loc 1 18 9 is_stmt 1 view .LVU5
+  46              		.loc 1 18 19 is_stmt 0 view .LVU6
+  47 001a A3F55D43 		sub	r3, r3, #56576
+  48 001e 1A68     		ldr	r2, [r3]
+  49 0020 22F00102 		bic	r2, r2, #1
+  50 0024 1A60     		str	r2, [r3]
+  19:Core/Src/dwt_delay.c ****         /* Enable clock cycle counter */
+  20:Core/Src/dwt_delay.c ****         DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+  51              		.loc 1 20 9 is_stmt 1 view .LVU7
+  52              		.loc 1 20 19 is_stmt 0 view .LVU8
+  53 0026 1A68     		ldr	r2, [r3]
+  54 0028 42F00102 		orr	r2, r2, #1
+  55 002c 1A60     		str	r2, [r3]
+  21:Core/Src/dwt_delay.c ****         #if (__CORTEX_M == 7)
+  22:Core/Src/dwt_delay.c ****                 DWT->LAR = 0xC5ACCE55; /* Use in Core-M7 */
+  23:Core/Src/dwt_delay.c ****         #endif
+  24:Core/Src/dwt_delay.c ****         /* Reset the clock cycle counter value */
+  25:Core/Src/dwt_delay.c ****         DWT->CYCCNT = 0;
+  56              		.loc 1 25 9 is_stmt 1 view .LVU9
+  57              		.loc 1 25 21 is_stmt 0 view .LVU10
+  58 002e 0022     		movs	r2, #0
+  59 0030 5A60     		str	r2, [r3, #4]
+  26:Core/Src/dwt_delay.c **** 
+  27:Core/Src/dwt_delay.c **** }
+  60              		.loc 1 27 1 view .LVU11
+  61 0032 7047     		bx	lr
+  62              	.L3:
+  63              		.align	2
+  64              	.L2:
+  65 0034 00ED00E0 		.word	-536810240
+  66              		.cfi_endproc
+  67              	.LFE130:
+  69              		.section	.text.DWT_Delay,"ax",%progbits
+  70              		.align	1
+  71              		.global	DWT_Delay
+  72              		.syntax unified
+  73              		.thumb
+  74              		.thumb_func
+  76              	DWT_Delay:
+  77              	.LVL0:
+  78              	.LFB131:
+  28:Core/Src/dwt_delay.c **** 
+  29:Core/Src/dwt_delay.c **** void DWT_Delay(uint32_t us)
+  30:Core/Src/dwt_delay.c **** {
+  79              		.loc 1 30 1 is_stmt 1 view -0
+  80              		.cfi_startproc
+  81              		@ args = 0, pretend = 0, frame = 0
+  82              		@ frame_needed = 0, uses_anonymous_args = 0
+  83              		@ link register save eliminated.
+  31:Core/Src/dwt_delay.c ****         uint32_t startTick = DWT->CYCCNT,
+  84              		.loc 1 31 9 view .LVU13
+  85              		.loc 1 31 18 is_stmt 0 view .LVU14
+  86 0000 074B     		ldr	r3, .L6
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccv9UZRO.s 			page 3
+
+
+  87 0002 5A68     		ldr	r2, [r3, #4]
+  88              	.LVL1:
+  32:Core/Src/dwt_delay.c ****                  delayTicks = us * (SystemCoreClock / 1000000);
+  89              		.loc 1 32 53 view .LVU15
+  90 0004 074B     		ldr	r3, .L6+4
+  91 0006 1B68     		ldr	r3, [r3]
+  92 0008 0749     		ldr	r1, .L6+8
+  93 000a A1FB0313 		umull	r1, r3, r1, r3
+  94 000e 9B0C     		lsrs	r3, r3, #18
+  95              		.loc 1 32 18 view .LVU16
+  96 0010 03FB00F0 		mul	r0, r3, r0
+  97              	.LVL2:
+  33:Core/Src/dwt_delay.c ****         
+  34:Core/Src/dwt_delay.c ****         while(DWT->CYCCNT - startTick < delayTicks);
+  98              		.loc 1 34 9 is_stmt 1 view .LVU17
+  99              	.L5:
+ 100              		.loc 1 34 52 discriminator 1 view .LVU18
+ 101              		.loc 1 34 14 discriminator 1 view .LVU19
+ 102              		.loc 1 34 18 is_stmt 0 discriminator 1 view .LVU20
+ 103 0014 024B     		ldr	r3, .L6
+ 104 0016 5B68     		ldr	r3, [r3, #4]
+ 105              		.loc 1 34 27 discriminator 1 view .LVU21
+ 106 0018 9B1A     		subs	r3, r3, r2
+ 107              		.loc 1 34 14 discriminator 1 view .LVU22
+ 108 001a 8342     		cmp	r3, r0
+ 109 001c FAD3     		bcc	.L5
+  35:Core/Src/dwt_delay.c **** }
+ 110              		.loc 1 35 1 view .LVU23
+ 111 001e 7047     		bx	lr
+ 112              	.L7:
+ 113              		.align	2
+ 114              	.L6:
+ 115 0020 001000E0 		.word	-536866816
+ 116 0024 00000000 		.word	SystemCoreClock
+ 117 0028 83DE1B43 		.word	1125899907
+ 118              		.cfi_endproc
+ 119              	.LFE131:
+ 121              		.section	.text.DWT_GetTick,"ax",%progbits
+ 122              		.align	1
+ 123              		.global	DWT_GetTick
+ 124              		.syntax unified
+ 125              		.thumb
+ 126              		.thumb_func
+ 128              	DWT_GetTick:
+ 129              	.LFB132:
+  36:Core/Src/dwt_delay.c **** 
+  37:Core/Src/dwt_delay.c **** uint32_t DWT_GetTick(void)
+  38:Core/Src/dwt_delay.c **** {
+ 130              		.loc 1 38 1 is_stmt 1 view -0
+ 131              		.cfi_startproc
+ 132              		@ args = 0, pretend = 0, frame = 0
+ 133              		@ frame_needed = 0, uses_anonymous_args = 0
+ 134              		@ link register save eliminated.
+  39:Core/Src/dwt_delay.c ****         return (DWT->CYCCNT);
+ 135              		.loc 1 39 9 view .LVU25
+ 136              		.loc 1 39 20 is_stmt 0 view .LVU26
+ 137 0000 014B     		ldr	r3, .L9
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccv9UZRO.s 			page 4
+
+
+ 138 0002 5868     		ldr	r0, [r3, #4]
+  40:Core/Src/dwt_delay.c **** }...
+ 139              		.loc 1 40 1 view .LVU27
+ 140 0004 7047     		bx	lr
+ 141              	.L10:
+ 142 0006 00BF     		.align	2
+ 143              	.L9:
+ 144 0008 001000E0 		.word	-536866816
+ 145              		.cfi_endproc
+ 146              	.LFE132:
+ 148              		.text
+ 149              	.Letext0:
+ 150              		.file 2 "d:\\gcc-arm-none-eabi-10.3-2021.10\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 151              		.file 3 "d:\\gcc-arm-none-eabi-10.3-2021.10\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 152              		.file 4 "Drivers/CMSIS/Include/core_cm4.h"
+ 153              		.file 5 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h"
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccv9UZRO.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 dwt_delay.c
+C:\Users\LINZHE~1\AppData\Local\Temp\ccv9UZRO.s:20     .text.DWT_Init:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\ccv9UZRO.s:26     .text.DWT_Init:00000000 DWT_Init
+C:\Users\LINZHE~1\AppData\Local\Temp\ccv9UZRO.s:65     .text.DWT_Init:00000034 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccv9UZRO.s:70     .text.DWT_Delay:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\ccv9UZRO.s:76     .text.DWT_Delay:00000000 DWT_Delay
+C:\Users\LINZHE~1\AppData\Local\Temp\ccv9UZRO.s:115    .text.DWT_Delay:00000020 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccv9UZRO.s:122    .text.DWT_GetTick:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\ccv9UZRO.s:128    .text.DWT_GetTick:00000000 DWT_GetTick
+C:\Users\LINZHE~1\AppData\Local\Temp\ccv9UZRO.s:144    .text.DWT_GetTick:00000008 $d
+
+UNDEFINED SYMBOLS
+SystemCoreClock

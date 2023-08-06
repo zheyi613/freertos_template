@@ -1,0 +1,2646 @@
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"port.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.prvTaskExitError,"ax",%progbits
+  20              		.align	1
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	prvTaskExitError:
+  26              	.LFB6:
+  27              		.file 1 "FreeRTOS/portable/GCC/ARM_CM4F/port.c"
+   1:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*
+   2:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * FreeRTOS Kernel V10.4.3
+   3:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+   4:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  *
+   5:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * Permission is hereby granted, free of charge, to any person obtaining a copy of
+   6:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * this software and associated documentation files (the "Software"), to deal in
+   7:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * the Software without restriction, including without limitation the rights to
+   8:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+   9:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * the Software, and to permit persons to whom the Software is furnished to do so,
+  10:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * subject to the following conditions:
+  11:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  *
+  12:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * The above copyright notice and this permission notice shall be included in all
+  13:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * copies or substantial portions of the Software.
+  14:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  *
+  15:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  16:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+  17:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+  18:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+  19:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  20:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  21:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  *
+  22:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * https://www.FreeRTOS.org
+  23:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * https://github.com/FreeRTOS
+  24:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  *
+  25:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  */
+  26:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+  27:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------
+  28:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** * Implementation of functions defined in portable.h for the ARM CM4F port.
+  29:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** *----------------------------------------------------------*/
+  30:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+  31:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /* Scheduler includes. */
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 2
+
+
+  32:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #include "FreeRTOS.h"
+  33:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #include "task.h"
+  34:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+  35:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #ifndef __VFP_FP__
+  36:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     #error This port can only be used when the project options are configured to enable hardware fl
+  37:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #endif
+  38:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+  39:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #ifndef configSYSTICK_CLOCK_HZ
+  40:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     #define configSYSTICK_CLOCK_HZ      configCPU_CLOCK_HZ
+  41:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Ensure the SysTick is clocked at the same frequency as the core. */
+  42:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     #define portNVIC_SYSTICK_CLK_BIT    ( 1UL << 2UL )
+  43:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #else
+  44:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+  45:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /* The way the SysTick is clocked is not modified in case it is not the same
+  46:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * as the core. */
+  47:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     #define portNVIC_SYSTICK_CLK_BIT    ( 0 )
+  48:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #endif
+  49:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+  50:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /* Constants required to manipulate the core.  Registers first... */
+  51:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portNVIC_SYSTICK_CTRL_REG             ( *( ( volatile uint32_t * ) 0xe000e010 ) )
+  52:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portNVIC_SYSTICK_LOAD_REG             ( *( ( volatile uint32_t * ) 0xe000e014 ) )
+  53:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portNVIC_SYSTICK_CURRENT_VALUE_REG    ( *( ( volatile uint32_t * ) 0xe000e018 ) )
+  54:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portNVIC_SHPR3_REG                    ( *( ( volatile uint32_t * ) 0xe000ed20 ) )
+  55:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /* ...then bits in the registers. */
+  56:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portNVIC_SYSTICK_INT_BIT              ( 1UL << 1UL )
+  57:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portNVIC_SYSTICK_ENABLE_BIT           ( 1UL << 0UL )
+  58:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portNVIC_SYSTICK_COUNT_FLAG_BIT       ( 1UL << 16UL )
+  59:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portNVIC_PENDSVCLEAR_BIT              ( 1UL << 27UL )
+  60:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portNVIC_PEND_SYSTICK_CLEAR_BIT       ( 1UL << 25UL )
+  61:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+  62:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /* Constants used to detect a Cortex-M7 r0p1 core, which should use the ARM_CM7
+  63:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * r0p1 port. */
+  64:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portCPUID                             ( *( ( volatile uint32_t * ) 0xE000ed00 ) )
+  65:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portCORTEX_M7_r0p1_ID                 ( 0x410FC271UL )
+  66:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portCORTEX_M7_r0p0_ID                 ( 0x410FC270UL )
+  67:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+  68:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portNVIC_PENDSV_PRI                   ( ( ( uint32_t ) configKERNEL_INTERRUPT_PRIORITY ) <<
+  69:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portNVIC_SYSTICK_PRI                  ( ( ( uint32_t ) configKERNEL_INTERRUPT_PRIORITY ) <<
+  70:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+  71:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /* Constants required to check the validity of an interrupt priority. */
+  72:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portFIRST_USER_INTERRUPT_NUMBER       ( 16 )
+  73:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portNVIC_IP_REGISTERS_OFFSET_16       ( 0xE000E3F0 )
+  74:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portAIRCR_REG                         ( *( ( volatile uint32_t * ) 0xE000ED0C ) )
+  75:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portMAX_8_BIT_VALUE                   ( ( uint8_t ) 0xff )
+  76:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portTOP_BIT_OF_BYTE                   ( ( uint8_t ) 0x80 )
+  77:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portMAX_PRIGROUP_BITS                 ( ( uint8_t ) 7 )
+  78:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portPRIORITY_GROUP_MASK               ( 0x07UL << 8UL )
+  79:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portPRIGROUP_SHIFT                    ( 8UL )
+  80:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+  81:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /* Masks off all bits but the VECTACTIVE bits in the ICSR register. */
+  82:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portVECTACTIVE_MASK                   ( 0xFFUL )
+  83:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+  84:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /* Constants required to manipulate the VFP. */
+  85:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portFPCCR                             ( ( volatile uint32_t * ) 0xe000ef34 ) /* Floating po
+  86:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portASPEN_AND_LSPEN_BITS              ( 0x3UL << 30UL )
+  87:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+  88:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /* Constants required to set up the initial stack. */
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 3
+
+
+  89:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portINITIAL_XPSR                      ( 0x01000000 )
+  90:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portINITIAL_EXC_RETURN                ( 0xfffffffd )
+  91:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+  92:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /* The systick is a 24-bit counter. */
+  93:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portMAX_24_BIT_NUMBER                 ( 0xffffffUL )
+  94:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+  95:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /* For strict compliance with the Cortex-M spec the task start address should
+  96:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * have bit-0 clear, as it is loaded into the PC on exit from an ISR. */
+  97:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portSTART_ADDRESS_MASK                ( ( StackType_t ) 0xfffffffeUL )
+  98:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+  99:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /* A fiddle factor to estimate the number of SysTick counts that would have
+ 100:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * occurred while the SysTick counter is stopped during tickless idle
+ 101:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * calculations. */
+ 102:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #define portMISSED_COUNTS_FACTOR              ( 45UL )
+ 103:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 104:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /* Let the user override the pre-loading of the initial LR with the address of
+ 105:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * prvTaskExitError() in case it messes up unwinding of the stack in the
+ 106:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * debugger. */
+ 107:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #ifdef configTASK_RETURN_ADDRESS
+ 108:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     #define portTASK_RETURN_ADDRESS    configTASK_RETURN_ADDRESS
+ 109:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #else
+ 110:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     #define portTASK_RETURN_ADDRESS    prvTaskExitError
+ 111:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #endif
+ 112:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 113:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*
+ 114:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * Setup the timer to generate the tick interrupts.  The implementation in this
+ 115:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * file is weak to allow application writers to change the timer used to
+ 116:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * generate the tick interrupt.
+ 117:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  */
+ 118:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** void vPortSetupTimerInterrupt( void );
+ 119:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 120:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*
+ 121:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * Exception handlers.
+ 122:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  */
+ 123:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** void xPortPendSVHandler( void ) __attribute__( ( naked ) );
+ 124:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** void xPortSysTickHandler( void );
+ 125:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** void vPortSVCHandler( void ) __attribute__( ( naked ) );
+ 126:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 127:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*
+ 128:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * Start first task is a separate function so it can be tested in isolation.
+ 129:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  */
+ 130:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** static void prvPortStartFirstTask( void ) __attribute__( ( naked ) );
+ 131:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 132:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*
+ 133:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * Function to enable the VFP.
+ 134:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  */
+ 135:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** static void vPortEnableVFP( void ) __attribute__( ( naked ) );
+ 136:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 137:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*
+ 138:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * Used to catch tasks that attempt to return from their implementing function.
+ 139:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  */
+ 140:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** static void prvTaskExitError( void );
+ 141:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 142:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 143:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 144:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /* Each task maintains its own interrupt status in the critical nesting
+ 145:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * variable. */
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 4
+
+
+ 146:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** static UBaseType_t uxCriticalNesting = 0xaaaaaaaa;
+ 147:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 148:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*
+ 149:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * The number of SysTick increments that make up one tick period.
+ 150:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  */
+ 151:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #if ( configUSE_TICKLESS_IDLE == 1 )
+ 152:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     static uint32_t ulTimerCountsForOneTick = 0;
+ 153:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #endif /* configUSE_TICKLESS_IDLE */
+ 154:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 155:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*
+ 156:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * The maximum number of tick periods that can be suppressed is limited by the
+ 157:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * 24 bit resolution of the SysTick timer.
+ 158:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  */
+ 159:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #if ( configUSE_TICKLESS_IDLE == 1 )
+ 160:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     static uint32_t xMaximumPossibleSuppressedTicks = 0;
+ 161:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #endif /* configUSE_TICKLESS_IDLE */
+ 162:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 163:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*
+ 164:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * Compensate for the CPU cycles that pass while the SysTick is stopped (low
+ 165:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * power functionality only.
+ 166:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  */
+ 167:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #if ( configUSE_TICKLESS_IDLE == 1 )
+ 168:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     static uint32_t ulStoppedTimerCompensation = 0;
+ 169:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #endif /* configUSE_TICKLESS_IDLE */
+ 170:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 171:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*
+ 172:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * Used by the portASSERT_IF_INTERRUPT_PRIORITY_INVALID() macro to ensure
+ 173:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * FreeRTOS API functions are not called from interrupts that have been assigned
+ 174:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * a priority above configMAX_SYSCALL_INTERRUPT_PRIORITY.
+ 175:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  */
+ 176:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #if ( configASSERT_DEFINED == 1 )
+ 177:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     static uint8_t ucMaxSysCallPriority = 0;
+ 178:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     static uint32_t ulMaxPRIGROUPValue = 0;
+ 179:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     static const volatile uint8_t * const pcInterruptPriorityRegisters = ( const volatile uint8_t *
+ 180:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #endif /* configASSERT_DEFINED */
+ 181:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 182:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 183:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 184:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*
+ 185:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * See header file for description.
+ 186:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  */
+ 187:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** StackType_t * pxPortInitialiseStack( StackType_t * pxTopOfStack,
+ 188:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                                      TaskFunction_t pxCode,
+ 189:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                                      void * pvParameters )
+ 190:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** {
+ 191:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Simulate the stack frame as it would be created by a context switch
+ 192:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * interrupt. */
+ 193:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 194:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Offset added to account for the way the MCU uses the stack on entry/exit
+ 195:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * of interrupts, and to ensure alignment. */
+ 196:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     pxTopOfStack--;
+ 197:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 198:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     *pxTopOfStack = portINITIAL_XPSR;                                    /* xPSR */
+ 199:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     pxTopOfStack--;
+ 200:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     *pxTopOfStack = ( ( StackType_t ) pxCode ) & portSTART_ADDRESS_MASK; /* PC */
+ 201:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     pxTopOfStack--;
+ 202:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     *pxTopOfStack = ( StackType_t ) portTASK_RETURN_ADDRESS;             /* LR */
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 5
+
+
+ 203:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 204:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Save code space by skipping register initialisation. */
+ 205:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     pxTopOfStack -= 5;                            /* R12, R3, R2 and R1. */
+ 206:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     *pxTopOfStack = ( StackType_t ) pvParameters; /* R0 */
+ 207:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 208:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* A save method is being used that requires each task to maintain its
+ 209:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * own exec return value. */
+ 210:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     pxTopOfStack--;
+ 211:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     *pxTopOfStack = portINITIAL_EXC_RETURN;
+ 212:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 213:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     pxTopOfStack -= 8; /* R11, R10, R9, R8, R7, R6, R5 and R4. */
+ 214:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 215:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     return pxTopOfStack;
+ 216:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 217:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 218:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 219:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** static void prvTaskExitError( void )
+ 220:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** {
+  28              		.loc 1 220 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 8
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33 0000 82B0     		sub	sp, sp, #8
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+ 221:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     volatile uint32_t ulDummy = 0;
+  36              		.loc 1 221 5 view .LVU1
+  37              		.loc 1 221 23 is_stmt 0 view .LVU2
+  38 0002 0023     		movs	r3, #0
+  39 0004 0193     		str	r3, [sp, #4]
+ 222:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 223:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* A function that implements a task must not exit or attempt to return to
+ 224:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * its caller as there is nothing to return to.  If a task wants to exit it
+ 225:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * should instead call vTaskDelete( NULL ).
+ 226:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      *
+ 227:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * Artificially force an assert() to be triggered if configASSERT() is
+ 228:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * defined, then stop here so application writers can catch the error. */
+ 229:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     configASSERT( uxCriticalNesting == ~0UL );
+  40              		.loc 1 229 5 is_stmt 1 view .LVU3
+  41 0006 0D4B     		ldr	r3, .L6
+  42 0008 1B68     		ldr	r3, [r3]
+  43 000a B3F1FF3F 		cmp	r3, #-1
+  44 000e 08D0     		beq	.L2
+  45              		.loc 1 229 5 view .LVU4
+  46              	.LBB33:
+  47              	.LBI33:
+  48              		.file 2 "FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h"
+   1:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /*
+   2:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * FreeRTOS Kernel V10.4.3
+   3:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+   4:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  *
+   5:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * Permission is hereby granted, free of charge, to any person obtaining a copy of
+   6:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * this software and associated documentation files (the "Software"), to deal in
+   7:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * the Software without restriction, including without limitation the rights to
+   8:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+   9:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * the Software, and to permit persons to whom the Software is furnished to do so,
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 6
+
+
+  10:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * subject to the following conditions:
+  11:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  *
+  12:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * The above copyright notice and this permission notice shall be included in all
+  13:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * copies or substantial portions of the Software.
+  14:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  *
+  15:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  16:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+  17:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+  18:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+  19:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  20:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  21:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  *
+  22:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * https://www.FreeRTOS.org
+  23:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * https://github.com/FreeRTOS
+  24:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  *
+  25:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * 1 tab == 4 spaces!
+  26:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  */
+  27:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+  28:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+  29:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** #ifndef PORTMACRO_H
+  30:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define PORTMACRO_H
+  31:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+  32:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #ifdef __cplusplus
+  33:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         extern "C" {
+  34:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #endif
+  35:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+  36:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /*-----------------------------------------------------------
+  37:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * Port specific definitions.
+  38:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  *
+  39:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * The settings in this file configure FreeRTOS correctly for the
+  40:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * given hardware and compiler.
+  41:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  *
+  42:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * These settings should not be altered.
+  43:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  *-----------------------------------------------------------
+  44:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  */
+  45:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+  46:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /* Type definitions. */
+  47:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portCHAR          char
+  48:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portFLOAT         float
+  49:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portDOUBLE        double
+  50:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portLONG          long
+  51:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portSHORT         short
+  52:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portSTACK_TYPE    uint32_t
+  53:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portBASE_TYPE     long
+  54:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+  55:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     typedef portSTACK_TYPE   StackType_t;
+  56:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     typedef long             BaseType_t;
+  57:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     typedef unsigned long    UBaseType_t;
+  58:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+  59:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #if ( configUSE_16_BIT_TICKS == 1 )
+  60:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         typedef uint16_t     TickType_t;
+  61:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         #define portMAX_DELAY              ( TickType_t ) 0xffff
+  62:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #else
+  63:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         typedef uint32_t     TickType_t;
+  64:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         #define portMAX_DELAY              ( TickType_t ) 0xffffffffUL
+  65:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+  66:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /* 32-bit tick type on a 32-bit architecture, so reads of the tick count do
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 7
+
+
+  67:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * not need to be guarded with a critical section. */
+  68:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         #define portTICK_TYPE_IS_ATOMIC    1
+  69:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #endif
+  70:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /*-----------------------------------------------------------*/
+  71:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+  72:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /* Architecture specifics. */
+  73:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portSTACK_GROWTH      ( -1 )
+  74:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portTICK_PERIOD_MS    ( ( TickType_t ) 1000 / configTICK_RATE_HZ )
+  75:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portBYTE_ALIGNMENT    8
+  76:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portDONT_DISCARD      __attribute__( ( used ) )
+  77:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /*-----------------------------------------------------------*/
+  78:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+  79:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /* Scheduler utilities. */
+  80:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portYIELD()                                 \
+  81:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     {                                                   \
+  82:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         /* Set a PendSV to request a context switch. */ \
+  83:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         portNVIC_INT_CTRL_REG = portNVIC_PENDSVSET_BIT; \
+  84:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****                                                         \
+  85:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         /* Barriers are normally not required but do ensure the code is completely \
+  86:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****          * within the specified behaviour for the architecture. */ \
+  87:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         __asm volatile ( "dsb" ::: "memory" );                     \
+  88:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         __asm volatile ( "isb" );                                  \
+  89:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     }
+  90:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+  91:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portNVIC_INT_CTRL_REG     ( *( ( volatile uint32_t * ) 0xe000ed04 ) )
+  92:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portNVIC_PENDSVSET_BIT    ( 1UL << 28UL )
+  93:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portEND_SWITCHING_ISR( xSwitchRequired ) { if( xSwitchRequired != pdFALSE ) { traceISR_
+  94:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portYIELD_FROM_ISR( x )                     portEND_SWITCHING_ISR( x )
+  95:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /*-----------------------------------------------------------*/
+  96:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+  97:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /* Critical section management. */
+  98:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     extern void vPortEnterCritical( void );
+  99:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     extern void vPortExitCritical( void );
+ 100:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portSET_INTERRUPT_MASK_FROM_ISR()         ulPortRaiseBASEPRI()
+ 101:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portCLEAR_INTERRUPT_MASK_FROM_ISR( x )    vPortSetBASEPRI( x )
+ 102:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portDISABLE_INTERRUPTS()                  vPortRaiseBASEPRI()
+ 103:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portENABLE_INTERRUPTS()                   vPortSetBASEPRI( 0 )
+ 104:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portENTER_CRITICAL()                      vPortEnterCritical()
+ 105:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portEXIT_CRITICAL()                       vPortExitCritical()
+ 106:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 107:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /*-----------------------------------------------------------*/
+ 108:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 109:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /* Task function macros as described on the FreeRTOS.org WEB site.  These are
+ 110:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * not necessary for to use this port.  They are defined so the common demo files
+ 111:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****  * (which build with all the ports) will build. */
+ 112:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portTASK_FUNCTION_PROTO( vFunction, pvParameters )    void vFunction( void * pvParamete
+ 113:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portTASK_FUNCTION( vFunction, pvParameters )          void vFunction( void * pvParamete
+ 114:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /*-----------------------------------------------------------*/
+ 115:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 116:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /* Tickless idle/low power functionality. */
+ 117:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #ifndef portSUPPRESS_TICKS_AND_SLEEP
+ 118:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         extern void vPortSuppressTicksAndSleep( TickType_t xExpectedIdleTime );
+ 119:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         #define portSUPPRESS_TICKS_AND_SLEEP( xExpectedIdleTime )    vPortSuppressTicksAndSleep( xE
+ 120:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #endif
+ 121:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /*-----------------------------------------------------------*/
+ 122:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 123:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /* Architecture specific optimisations. */
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 8
+
+
+ 124:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #ifndef configUSE_PORT_OPTIMISED_TASK_SELECTION
+ 125:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         #define configUSE_PORT_OPTIMISED_TASK_SELECTION    1
+ 126:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #endif
+ 127:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 128:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #if configUSE_PORT_OPTIMISED_TASK_SELECTION == 1
+ 129:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 130:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /* Generic helper function. */
+ 131:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         __attribute__( ( always_inline ) ) static inline uint8_t ucPortCountLeadingZeros( uint32_t 
+ 132:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         {
+ 133:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****             uint8_t ucReturn;
+ 134:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 135:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****             __asm volatile ( "clz %0, %1" : "=r" ( ucReturn ) : "r" ( ulBitmap ) : "memory" );
+ 136:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 137:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****             return ucReturn;
+ 138:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         }
+ 139:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 140:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /* Check the configuration. */
+ 141:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         #if ( configMAX_PRIORITIES > 32 )
+ 142:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****             #error configUSE_PORT_OPTIMISED_TASK_SELECTION can only be set to 1 when configMAX_PRIO
+ 143:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         #endif
+ 144:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 145:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /* Store/clear the ready priorities in a bit map. */
+ 146:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         #define portRECORD_READY_PRIORITY( uxPriority, uxReadyPriorities )    ( uxReadyPriorities )
+ 147:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         #define portRESET_READY_PRIORITY( uxPriority, uxReadyPriorities )     ( uxReadyPriorities )
+ 148:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 149:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /*-----------------------------------------------------------*/
+ 150:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 151:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         #define portGET_HIGHEST_PRIORITY( uxTopPriority, uxReadyPriorities )    uxTopPriority = ( 3
+ 152:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 153:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #endif /* configUSE_PORT_OPTIMISED_TASK_SELECTION */
+ 154:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 155:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /*-----------------------------------------------------------*/
+ 156:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 157:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #ifdef configASSERT
+ 158:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         void vPortValidateInterruptPriority( void );
+ 159:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         #define portASSERT_IF_INTERRUPT_PRIORITY_INVALID()    vPortValidateInterruptPriority()
+ 160:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #endif
+ 161:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 162:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /* portNOP() is not required by this port. */
+ 163:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portNOP()
+ 164:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 165:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #define portINLINE              __inline
+ 166:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 167:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #ifndef portFORCE_INLINE
+ 168:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         #define portFORCE_INLINE    inline __attribute__( ( always_inline ) )
+ 169:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     #endif
+ 170:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 171:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     portFORCE_INLINE static BaseType_t xPortIsInsideInterrupt( void )
+ 172:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     {
+ 173:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         uint32_t ulCurrentInterrupt;
+ 174:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         BaseType_t xReturn;
+ 175:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 176:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         /* Obtain the number of the currently executing interrupt. */
+ 177:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         __asm volatile ( "mrs %0, ipsr" : "=r" ( ulCurrentInterrupt )::"memory" );
+ 178:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 179:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         if( ulCurrentInterrupt == 0 )
+ 180:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         {
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 9
+
+
+ 181:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****             xReturn = pdFALSE;
+ 182:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         }
+ 183:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         else
+ 184:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         {
+ 185:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****             xReturn = pdTRUE;
+ 186:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         }
+ 187:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 188:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         return xReturn;
+ 189:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     }
+ 190:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 191:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /*-----------------------------------------------------------*/
+ 192:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 193:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     portFORCE_INLINE static void vPortRaiseBASEPRI( void )
+  49              		.loc 2 193 34 view .LVU5
+  50              	.LBB34:
+ 194:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     {
+ 195:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         uint32_t ulNewBASEPRI;
+  51              		.loc 2 195 9 view .LVU6
+ 196:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 197:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         __asm volatile
+  52              		.loc 2 197 9 view .LVU7
+  53              		.syntax unified
+  54              	@ 197 "FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h" 1
+  55 0010 4FF05003 			mov r3, #80												
+  56 0014 83F31188 		msr basepri, r3											
+  57 0018 BFF36F8F 		isb														
+  58 001c BFF34F8F 		dsb														
+  59              	
+  60              	@ 0 "" 2
+  61              	.LVL0:
+  62              		.thumb
+  63              		.syntax unified
+  64              	.L3:
+  65              		.loc 2 197 9 is_stmt 0 view .LVU8
+  66              	.LBE34:
+  67              	.LBE33:
+  68              		.loc 1 229 5 is_stmt 1 discriminator 1 view .LVU9
+  69              		.loc 1 229 5 discriminator 1 view .LVU10
+  70              		.loc 1 229 5 discriminator 1 view .LVU11
+  71 0020 FEE7     		b	.L3
+  72              	.L2:
+  73              		.loc 1 229 46 view .LVU12
+ 230:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     portDISABLE_INTERRUPTS();
+  74              		.loc 1 230 5 view .LVU13
+  75              	.LBB35:
+  76              	.LBI35:
+ 193:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     {
+  77              		.loc 2 193 34 view .LVU14
+  78              	.LBB36:
+ 195:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+  79              		.loc 2 195 9 view .LVU15
+  80              		.loc 2 197 9 view .LVU16
+  81              		.syntax unified
+  82              	@ 197 "FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h" 1
+  83 0022 4FF05003 			mov r3, #80												
+  84 0026 83F31188 		msr basepri, r3											
+  85 002a BFF36F8F 		isb														
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 10
+
+
+  86 002e BFF34F8F 		dsb														
+  87              	
+  88              	@ 0 "" 2
+  89              	.LVL1:
+  90              		.thumb
+  91              		.syntax unified
+  92              	.L4:
+  93              		.loc 2 197 9 is_stmt 0 view .LVU17
+  94              	.LBE36:
+  95              	.LBE35:
+ 231:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 232:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     while( ulDummy == 0 )
+ 233:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     {
+ 234:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         /* This file calls prvTaskExitError() after the scheduler has been
+ 235:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * started to remove a compiler warning about the function being defined
+ 236:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * but never called.  ulDummy is used purely to quieten other warnings
+ 237:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * about code appearing after this function is called - making ulDummy
+ 238:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * volatile makes the compiler think the function could return and
+ 239:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * therefore not output an 'unreachable code' warning for code that appears
+ 240:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * after it. */
+ 241:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     }
+  96              		.loc 1 241 5 is_stmt 1 discriminator 1 view .LVU18
+ 232:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     {
+  97              		.loc 1 232 10 discriminator 1 view .LVU19
+ 232:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     {
+  98              		.loc 1 232 20 is_stmt 0 discriminator 1 view .LVU20
+  99 0032 019B     		ldr	r3, [sp, #4]
+ 232:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     {
+ 100              		.loc 1 232 10 discriminator 1 view .LVU21
+ 101 0034 002B     		cmp	r3, #0
+ 102 0036 FCD0     		beq	.L4
+ 242:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 103              		.loc 1 242 1 view .LVU22
+ 104 0038 02B0     		add	sp, sp, #8
+ 105              	.LCFI1:
+ 106              		.cfi_def_cfa_offset 0
+ 107              		@ sp needed
+ 108 003a 7047     		bx	lr
+ 109              	.L7:
+ 110              		.align	2
+ 111              	.L6:
+ 112 003c 00000000 		.word	.LANCHOR0
+ 113              		.cfi_endproc
+ 114              	.LFE6:
+ 116              		.section	.text.prvPortStartFirstTask,"ax",%progbits
+ 117              		.align	1
+ 118              		.syntax unified
+ 119              		.thumb
+ 120              		.thumb_func
+ 122              	prvPortStartFirstTask:
+ 123              	.LFB8:
+ 243:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 244:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 245:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** void vPortSVCHandler( void )
+ 246:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** {
+ 247:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     __asm volatile (
+ 248:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	ldr	r3, pxCurrentTCBConst2		\n"/* Restore the context. */
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 11
+
+
+ 249:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	ldr r1, [r3]					\n"/* Use pxCurrentTCBConst to get the pxCurrentTCB address. */
+ 250:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	ldr r0, [r1]					\n"/* The first item in pxCurrentTCB is the task top of stack. */
+ 251:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	ldmia r0!, {r4-r11, r14}		\n"/* Pop the registers that are not automatically saved on exc
+ 252:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	msr psp, r0						\n"/* Restore the task stack pointer. */
+ 253:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	isb								\n"
+ 254:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	mov r0, #0 						\n"
+ 255:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	msr	basepri, r0					\n"
+ 256:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	bx r14							\n"
+ 257:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "									\n"
+ 258:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	.align 4						\n"
+ 259:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "pxCurrentTCBConst2: .word pxCurrentTCB				\n"
+ 260:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         );
+ 261:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 262:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 263:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 264:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** static void prvPortStartFirstTask( void )
+ 265:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** {
+ 124              		.loc 1 265 1 is_stmt 1 view -0
+ 125              		.cfi_startproc
+ 126              		@ Naked Function: prologue and epilogue provided by programmer.
+ 127              		@ args = 0, pretend = 0, frame = 0
+ 128              		@ frame_needed = 0, uses_anonymous_args = 0
+ 266:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Start the first task.  This also clears the bit that indicates the FPU is
+ 267:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * in use in case the FPU was used before the scheduler was started - which
+ 268:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * would otherwise result in the unnecessary leaving of space in the SVC stack
+ 269:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * for lazy saving of FPU registers. */
+ 270:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     __asm volatile (
+ 129              		.loc 1 270 5 view .LVU24
+ 130              		.syntax unified
+ 131              	@ 270 "FreeRTOS/portable/GCC/ARM_CM4F/port.c" 1
+ 132 0000 0848     		 ldr r0, =0xE000ED08 	
+ 133 0002 0068     	 ldr r0, [r0] 			
+ 134 0004 0068     	 ldr r0, [r0] 			
+ 135 0006 80F30888 	 msr msp, r0			
+ 136 000a 4FF00000 	 mov r0, #0			
+ 137 000e 80F31488 	 msr control, r0		
+ 138 0012 62B6     	 cpsie i				
+ 139 0014 61B6     	 cpsie f				
+ 140 0016 BFF34F8F 	 dsb					
+ 141 001a BFF36F8F 	 isb					
+ 142 001e 00DF     	 svc 0					
+ 143 0020 00BF     	 nop					
+ 144 0022 000008ED 	 .ltorg				
+ 144      00E0
+ 145              	
+ 146              	@ 0 "" 2
+ 271:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         " ldr r0, =0xE000ED08 	\n"/* Use the NVIC offset register to locate the stack. */
+ 272:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         " ldr r0, [r0] 			\n"
+ 273:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         " ldr r0, [r0] 			\n"
+ 274:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         " msr msp, r0			\n"/* Set the msp back to the start of the stack. */
+ 275:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         " mov r0, #0			\n"/* Clear the bit that indicates the FPU is in use, see comment above. */
+ 276:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         " msr control, r0		\n"
+ 277:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         " cpsie i				\n"/* Globally enable interrupts. */
+ 278:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         " cpsie f				\n"
+ 279:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         " dsb					\n"
+ 280:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         " isb					\n"
+ 281:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         " svc 0					\n"/* System call to start first task. */
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 12
+
+
+ 282:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         " nop					\n"
+ 283:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         " .ltorg				\n"
+ 284:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         );
+ 285:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 147              		.loc 1 285 1 is_stmt 0 view .LVU25
+ 148              		.thumb
+ 149              		.syntax unified
+ 150              		.cfi_endproc
+ 151              	.LFE8:
+ 153              		.section	.text.vPortEnableVFP,"ax",%progbits
+ 154              		.align	1
+ 155              		.syntax unified
+ 156              		.thumb
+ 157              		.thumb_func
+ 159              	vPortEnableVFP:
+ 160              	.LFB16:
+ 286:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 287:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 288:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*
+ 289:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * See header file for description.
+ 290:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  */
+ 291:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** BaseType_t xPortStartScheduler( void )
+ 292:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** {
+ 293:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* configMAX_SYSCALL_INTERRUPT_PRIORITY must not be set to 0.
+ 294:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * See https://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html */
+ 295:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     configASSERT( configMAX_SYSCALL_INTERRUPT_PRIORITY );
+ 296:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 297:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* This port can be used on all revisions of the Cortex-M7 core other than
+ 298:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * the r0p1 parts.  r0p1 parts should use the port from the
+ 299:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * /source/portable/GCC/ARM_CM7/r0p1 directory. */
+ 300:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     configASSERT( portCPUID != portCORTEX_M7_r0p1_ID );
+ 301:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     configASSERT( portCPUID != portCORTEX_M7_r0p0_ID );
+ 302:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 303:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     #if ( configASSERT_DEFINED == 1 )
+ 304:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         {
+ 305:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             volatile uint32_t ulOriginalPriority;
+ 306:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             volatile uint8_t * const pucFirstUserPriorityRegister = ( volatile uint8_t * const ) ( 
+ 307:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             volatile uint8_t ucMaxPriorityValue;
+ 308:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 309:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Determine the maximum priority from which ISR safe FreeRTOS API
+ 310:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * functions can be called.  ISR safe functions are those that end in
+ 311:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * "FromISR".  FreeRTOS maintains separate thread and ISR API functions to
+ 312:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * ensure interrupt entry is as fast and simple as possible.
+ 313:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              *
+ 314:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * Save the interrupt priority value that is about to be clobbered. */
+ 315:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             ulOriginalPriority = *pucFirstUserPriorityRegister;
+ 316:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 317:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Determine the number of priority bits available.  First write to all
+ 318:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * possible bits. */
+ 319:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             *pucFirstUserPriorityRegister = portMAX_8_BIT_VALUE;
+ 320:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 321:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Read the value back to see how many bits stuck. */
+ 322:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             ucMaxPriorityValue = *pucFirstUserPriorityRegister;
+ 323:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 324:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Use the same mask on the maximum system call priority. */
+ 325:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             ucMaxSysCallPriority = configMAX_SYSCALL_INTERRUPT_PRIORITY & ucMaxPriorityValue;
+ 326:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 13
+
+
+ 327:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Calculate the maximum acceptable priority group value for the number
+ 328:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * of bits read back. */
+ 329:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             ulMaxPRIGROUPValue = portMAX_PRIGROUP_BITS;
+ 330:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 331:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             while( ( ucMaxPriorityValue & portTOP_BIT_OF_BYTE ) == portTOP_BIT_OF_BYTE )
+ 332:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             {
+ 333:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 ulMaxPRIGROUPValue--;
+ 334:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 ucMaxPriorityValue <<= ( uint8_t ) 0x01;
+ 335:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             }
+ 336:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 337:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             #ifdef __NVIC_PRIO_BITS
+ 338:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 {
+ 339:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                     /* Check the CMSIS configuration that defines the number of
+ 340:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                      * priority bits matches the number of priority bits actually queried
+ 341:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                      * from the hardware. */
+ 342:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                     configASSERT( ( portMAX_PRIGROUP_BITS - ulMaxPRIGROUPValue ) == __NVIC_PRIO_BIT
+ 343:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 }
+ 344:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             #endif
+ 345:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 346:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             #ifdef configPRIO_BITS
+ 347:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 {
+ 348:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                     /* Check the FreeRTOS configuration that defines the number of
+ 349:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                      * priority bits matches the number of priority bits actually queried
+ 350:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                      * from the hardware. */
+ 351:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                     configASSERT( ( portMAX_PRIGROUP_BITS - ulMaxPRIGROUPValue ) == configPRIO_BITS
+ 352:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 }
+ 353:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             #endif
+ 354:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 355:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Shift the priority group value back to its position within the AIRCR
+ 356:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * register. */
+ 357:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             ulMaxPRIGROUPValue <<= portPRIGROUP_SHIFT;
+ 358:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             ulMaxPRIGROUPValue &= portPRIORITY_GROUP_MASK;
+ 359:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 360:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Restore the clobbered interrupt priority register to its original
+ 361:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * value. */
+ 362:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             *pucFirstUserPriorityRegister = ulOriginalPriority;
+ 363:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         }
+ 364:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     #endif /* conifgASSERT_DEFINED */
+ 365:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 366:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Make PendSV and SysTick the lowest priority interrupts. */
+ 367:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     portNVIC_SHPR3_REG |= portNVIC_PENDSV_PRI;
+ 368:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     portNVIC_SHPR3_REG |= portNVIC_SYSTICK_PRI;
+ 369:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 370:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Start the timer that generates the tick ISR.  Interrupts are disabled
+ 371:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * here already. */
+ 372:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     vPortSetupTimerInterrupt();
+ 373:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 374:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Initialise the critical nesting count ready for the first task. */
+ 375:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     uxCriticalNesting = 0;
+ 376:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 377:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Ensure the VFP is enabled - it should be anyway. */
+ 378:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     vPortEnableVFP();
+ 379:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 380:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Lazy save always. */
+ 381:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     *( portFPCCR ) |= portASPEN_AND_LSPEN_BITS;
+ 382:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 383:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Start the first task. */
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 14
+
+
+ 384:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     prvPortStartFirstTask();
+ 385:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 386:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Should never get here as the tasks will now be executing!  Call the task
+ 387:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * exit error function to prevent compiler warnings about a static function
+ 388:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * not being called in the case that the application writer overrides this
+ 389:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * functionality by defining configTASK_RETURN_ADDRESS.  Call
+ 390:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * vTaskSwitchContext() so link time optimisation does not remove the
+ 391:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * symbol. */
+ 392:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     vTaskSwitchContext();
+ 393:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     prvTaskExitError();
+ 394:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 395:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Should not get here! */
+ 396:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     return 0;
+ 397:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 398:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 399:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 400:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** void vPortEndScheduler( void )
+ 401:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** {
+ 402:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Not implemented in ports where there is nothing to return to.
+ 403:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * Artificially force an assert. */
+ 404:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     configASSERT( uxCriticalNesting == 1000UL );
+ 405:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 406:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 407:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 408:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** void vPortEnterCritical( void )
+ 409:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** {
+ 410:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     portDISABLE_INTERRUPTS();
+ 411:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     uxCriticalNesting++;
+ 412:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 413:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* This is not the interrupt safe version of the enter critical function so
+ 414:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * assert() if it is being called from an interrupt context.  Only API
+ 415:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * functions that end in "FromISR" can be used in an interrupt.  Only assert if
+ 416:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * the critical nesting count is 1 to protect against recursive calls if the
+ 417:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * assert function also uses a critical section. */
+ 418:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     if( uxCriticalNesting == 1 )
+ 419:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     {
+ 420:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         configASSERT( ( portNVIC_INT_CTRL_REG & portVECTACTIVE_MASK ) == 0 );
+ 421:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     }
+ 422:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 423:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 424:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 425:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** void vPortExitCritical( void )
+ 426:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** {
+ 427:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     configASSERT( uxCriticalNesting );
+ 428:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     uxCriticalNesting--;
+ 429:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 430:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     if( uxCriticalNesting == 0 )
+ 431:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     {
+ 432:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         portENABLE_INTERRUPTS();
+ 433:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     }
+ 434:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 435:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 436:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 437:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** void xPortPendSVHandler( void )
+ 438:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** {
+ 439:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* This is a naked function. */
+ 440:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 15
+
+
+ 441:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     __asm volatile
+ 442:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     (
+ 443:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	mrs r0, psp							\n"
+ 444:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	isb									\n"
+ 445:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "										\n"
+ 446:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	ldr	r3, pxCurrentTCBConst			\n"/* Get the location of the current TCB. */
+ 447:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	ldr	r2, [r3]						\n"
+ 448:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "										\n"
+ 449:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	tst r14, #0x10						\n"/* Is the task using the FPU context?  If so, push high vfp regist
+ 450:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	it eq								\n"
+ 451:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	vstmdbeq r0!, {s16-s31}				\n"
+ 452:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "										\n"
+ 453:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	stmdb r0!, {r4-r11, r14}			\n"/* Save the core registers. */
+ 454:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	str r0, [r2]						\n"/* Save the new top of stack into the first member of the TCB. */
+ 455:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "										\n"
+ 456:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	stmdb sp!, {r0, r3}					\n"
+ 457:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	mov r0, %0 							\n"
+ 458:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	msr basepri, r0						\n"
+ 459:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	dsb									\n"
+ 460:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	isb									\n"
+ 461:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	bl vTaskSwitchContext				\n"
+ 462:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	mov r0, #0							\n"
+ 463:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	msr basepri, r0						\n"
+ 464:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	ldmia sp!, {r0, r3}					\n"
+ 465:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "										\n"
+ 466:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	ldr r1, [r3]						\n"/* The first item in pxCurrentTCB is the task top of stack. */
+ 467:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	ldr r0, [r1]						\n"
+ 468:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "										\n"
+ 469:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	ldmia r0!, {r4-r11, r14}			\n"/* Pop the core registers. */
+ 470:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "										\n"
+ 471:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	tst r14, #0x10						\n"/* Is the task using the FPU context?  If so, pop the high vfp reg
+ 472:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	it eq								\n"
+ 473:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	vldmiaeq r0!, {s16-s31}				\n"
+ 474:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "										\n"
+ 475:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	msr psp, r0							\n"
+ 476:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	isb									\n"
+ 477:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "										\n"
+ 478:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         #ifdef WORKAROUND_PMU_CM001 /* XMC4000 specific errata workaround. */
+ 479:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             #if WORKAROUND_PMU_CM001 == 1
+ 480:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 "			push { r14 }				\n"
+ 481:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 "			pop { pc }					\n"
+ 482:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             #endif
+ 483:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         #endif
+ 484:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "										\n"
+ 485:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	bx r14								\n"
+ 486:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "										\n"
+ 487:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	.align 4							\n"
+ 488:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "pxCurrentTCBConst: .word pxCurrentTCB	\n"
+ 489:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         ::"i" ( configMAX_SYSCALL_INTERRUPT_PRIORITY )
+ 490:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     );
+ 491:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 492:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 493:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 494:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** void xPortSysTickHandler( void )
+ 495:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** {
+ 496:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* The SysTick runs at the lowest interrupt priority, so when this interrupt
+ 497:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * executes all interrupts must be unmasked.  There is therefore no need to
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 16
+
+
+ 498:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * save and then restore the interrupt mask value as its value is already
+ 499:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****      * known. */
+ 500:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     portDISABLE_INTERRUPTS();
+ 501:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     traceISR_ENTER();
+ 502:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     {
+ 503:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         /* Increment the RTOS tick. */
+ 504:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         if( xTaskIncrementTick() != pdFALSE )
+ 505:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         {
+ 506:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             traceISR_EXIT_TO_SCHEDULER();
+ 507:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* A context switch is required.  Context switching is performed in
+ 508:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * the PendSV interrupt.  Pend the PendSV interrupt. */
+ 509:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             portNVIC_INT_CTRL_REG = portNVIC_PENDSVSET_BIT;
+ 510:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         }
+ 511:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         else
+ 512:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         {
+ 513:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             traceISR_EXIT();
+ 514:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         }
+ 515:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     }
+ 516:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     portENABLE_INTERRUPTS();
+ 517:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 518:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 519:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 520:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #if ( configUSE_TICKLESS_IDLE == 1 )
+ 521:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 522:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     __attribute__( ( weak ) ) void vPortSuppressTicksAndSleep( TickType_t xExpectedIdleTime )
+ 523:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     {
+ 524:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         uint32_t ulReloadValue, ulCompleteTickPeriods, ulCompletedSysTickDecrements;
+ 525:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         TickType_t xModifiableIdleTime;
+ 526:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 527:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         /* Make sure the SysTick reload value does not overflow the counter. */
+ 528:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         if( xExpectedIdleTime > xMaximumPossibleSuppressedTicks )
+ 529:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         {
+ 530:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             xExpectedIdleTime = xMaximumPossibleSuppressedTicks;
+ 531:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         }
+ 532:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 533:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         /* Stop the SysTick momentarily.  The time the SysTick is stopped for
+ 534:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * is accounted for as best it can be, but using the tickless mode will
+ 535:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * inevitably result in some tiny drift of the time maintained by the
+ 536:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * kernel with respect to calendar time. */
+ 537:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         portNVIC_SYSTICK_CTRL_REG &= ~portNVIC_SYSTICK_ENABLE_BIT;
+ 538:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 539:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         /* Calculate the reload value required to wait xExpectedIdleTime
+ 540:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * tick periods.  -1 is used because this code will execute part way
+ 541:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * through one of the tick periods. */
+ 542:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         ulReloadValue = portNVIC_SYSTICK_CURRENT_VALUE_REG + ( ulTimerCountsForOneTick * ( xExpecte
+ 543:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 544:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         if( ulReloadValue > ulStoppedTimerCompensation )
+ 545:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         {
+ 546:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             ulReloadValue -= ulStoppedTimerCompensation;
+ 547:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         }
+ 548:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 549:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         /* Enter a critical section but don't use the taskENTER_CRITICAL()
+ 550:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * method as that will mask interrupts that should exit sleep mode. */
+ 551:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         __asm volatile ( "cpsid i" ::: "memory" );
+ 552:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         __asm volatile ( "dsb" );
+ 553:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         __asm volatile ( "isb" );
+ 554:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 17
+
+
+ 555:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         /* If a context switch is pending or a task is waiting for the scheduler
+ 556:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * to be unsuspended then abandon the low power entry. */
+ 557:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         if( eTaskConfirmSleepModeStatus() == eAbortSleep )
+ 558:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         {
+ 559:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Restart from whatever is left in the count register to complete
+ 560:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * this tick period. */
+ 561:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             portNVIC_SYSTICK_LOAD_REG = portNVIC_SYSTICK_CURRENT_VALUE_REG;
+ 562:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 563:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Restart SysTick. */
+ 564:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             portNVIC_SYSTICK_CTRL_REG |= portNVIC_SYSTICK_ENABLE_BIT;
+ 565:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 566:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Reset the reload register to the value required for normal tick
+ 567:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * periods. */
+ 568:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             portNVIC_SYSTICK_LOAD_REG = ulTimerCountsForOneTick - 1UL;
+ 569:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 570:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Re-enable interrupts - see comments above the cpsid instruction()
+ 571:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * above. */
+ 572:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             __asm volatile ( "cpsie i" ::: "memory" );
+ 573:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         }
+ 574:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         else
+ 575:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         {
+ 576:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Set the new reload value. */
+ 577:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             portNVIC_SYSTICK_LOAD_REG = ulReloadValue;
+ 578:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 579:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Clear the SysTick count flag and set the count value back to
+ 580:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * zero. */
+ 581:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             portNVIC_SYSTICK_CURRENT_VALUE_REG = 0UL;
+ 582:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 583:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Restart SysTick. */
+ 584:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             portNVIC_SYSTICK_CTRL_REG |= portNVIC_SYSTICK_ENABLE_BIT;
+ 585:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 586:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Sleep until something happens.  configPRE_SLEEP_PROCESSING() can
+ 587:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * set its parameter to 0 to indicate that its implementation contains
+ 588:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * its own wait for interrupt or wait for event instruction, and so wfi
+ 589:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * should not be executed again.  However, the original expected idle
+ 590:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * time variable must remain unmodified, so a copy is taken. */
+ 591:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             xModifiableIdleTime = xExpectedIdleTime;
+ 592:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             configPRE_SLEEP_PROCESSING( xModifiableIdleTime );
+ 593:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 594:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             if( xModifiableIdleTime > 0 )
+ 595:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             {
+ 596:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 __asm volatile ( "dsb" ::: "memory" );
+ 597:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 __asm volatile ( "wfi" );
+ 598:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 __asm volatile ( "isb" );
+ 599:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             }
+ 600:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 601:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             configPOST_SLEEP_PROCESSING( xExpectedIdleTime );
+ 602:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 603:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Re-enable interrupts to allow the interrupt that brought the MCU
+ 604:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * out of sleep mode to execute immediately.  see comments above
+ 605:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * __disable_interrupt() call above. */
+ 606:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             __asm volatile ( "cpsie i" ::: "memory" );
+ 607:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             __asm volatile ( "dsb" );
+ 608:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             __asm volatile ( "isb" );
+ 609:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 610:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Disable interrupts again because the clock is about to be stopped
+ 611:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * and interrupts that execute while the clock is stopped will increase
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 18
+
+
+ 612:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * any slippage between the time maintained by the RTOS and calendar
+ 613:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * time. */
+ 614:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             __asm volatile ( "cpsid i" ::: "memory" );
+ 615:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             __asm volatile ( "dsb" );
+ 616:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             __asm volatile ( "isb" );
+ 617:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 618:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Disable the SysTick clock without reading the
+ 619:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * portNVIC_SYSTICK_CTRL_REG register to ensure the
+ 620:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * portNVIC_SYSTICK_COUNT_FLAG_BIT is not cleared if it is set.  Again,
+ 621:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * the time the SysTick is stopped for is accounted for as best it can
+ 622:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * be, but using the tickless mode will inevitably result in some tiny
+ 623:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * drift of the time maintained by the kernel with respect to calendar
+ 624:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * time*/
+ 625:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             portNVIC_SYSTICK_CTRL_REG = ( portNVIC_SYSTICK_CLK_BIT | portNVIC_SYSTICK_INT_BIT );
+ 626:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 627:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Determine if the SysTick clock has already counted to zero and
+ 628:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * been set back to the current reload value (the reload back being
+ 629:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * correct for the entire expected idle time) or if the SysTick is yet
+ 630:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * to count to zero (in which case an interrupt other than the SysTick
+ 631:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * must have brought the system out of sleep mode). */
+ 632:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             if( ( portNVIC_SYSTICK_CTRL_REG & portNVIC_SYSTICK_COUNT_FLAG_BIT ) != 0 )
+ 633:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             {
+ 634:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 uint32_t ulCalculatedLoadValue;
+ 635:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 636:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 /* The tick interrupt is already pending, and the SysTick count
+ 637:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                  * reloaded with ulReloadValue.  Reset the
+ 638:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                  * portNVIC_SYSTICK_LOAD_REG with whatever remains of this tick
+ 639:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                  * period. */
+ 640:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 ulCalculatedLoadValue = ( ulTimerCountsForOneTick - 1UL ) - ( ulReloadValue - portN
+ 641:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 642:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 /* Don't allow a tiny value, or values that have somehow
+ 643:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                  * underflowed because the post sleep hook did something
+ 644:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                  * that took too long. */
+ 645:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 if( ( ulCalculatedLoadValue < ulStoppedTimerCompensation ) || ( ulCalculatedLoadVal
+ 646:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 {
+ 647:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                     ulCalculatedLoadValue = ( ulTimerCountsForOneTick - 1UL );
+ 648:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 }
+ 649:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 650:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 portNVIC_SYSTICK_LOAD_REG = ulCalculatedLoadValue;
+ 651:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 652:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 /* As the pending tick will be processed as soon as this
+ 653:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                  * function exits, the tick value maintained by the tick is stepped
+ 654:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                  * forward by one less than the time spent waiting. */
+ 655:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 ulCompleteTickPeriods = xExpectedIdleTime - 1UL;
+ 656:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             }
+ 657:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             else
+ 658:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             {
+ 659:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 /* Something other than the tick interrupt ended the sleep.
+ 660:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                  * Work out how long the sleep lasted rounded to complete tick
+ 661:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                  * periods (not the ulReload value which accounted for part
+ 662:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                  * ticks). */
+ 663:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 ulCompletedSysTickDecrements = ( xExpectedIdleTime * ulTimerCountsForOneTick ) - po
+ 664:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 665:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 /* How many complete tick periods passed while the processor
+ 666:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                  * was waiting? */
+ 667:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 ulCompleteTickPeriods = ulCompletedSysTickDecrements / ulTimerCountsForOneTick;
+ 668:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 19
+
+
+ 669:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 /* The reload value is set to whatever fraction of a single tick
+ 670:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                  * period remains. */
+ 671:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 portNVIC_SYSTICK_LOAD_REG = ( ( ulCompleteTickPeriods + 1UL ) * ulTimerCountsForOne
+ 672:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             }
+ 673:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 674:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Restart SysTick so it runs from portNVIC_SYSTICK_LOAD_REG
+ 675:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * again, then set portNVIC_SYSTICK_LOAD_REG back to its standard
+ 676:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * value. */
+ 677:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             portNVIC_SYSTICK_CURRENT_VALUE_REG = 0UL;
+ 678:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             portNVIC_SYSTICK_CTRL_REG |= portNVIC_SYSTICK_ENABLE_BIT;
+ 679:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             vTaskStepTick( ulCompleteTickPeriods );
+ 680:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             portNVIC_SYSTICK_LOAD_REG = ulTimerCountsForOneTick - 1UL;
+ 681:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 682:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Exit with interrupts enabled. */
+ 683:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             __asm volatile ( "cpsie i" ::: "memory" );
+ 684:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         }
+ 685:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     }
+ 686:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 687:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #endif /* #if configUSE_TICKLESS_IDLE */
+ 688:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 689:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 690:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*
+ 691:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * Setup the systick timer to generate the tick interrupts at the required
+ 692:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  * frequency.
+ 693:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****  */
+ 694:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** __attribute__( ( weak ) ) void vPortSetupTimerInterrupt( void )
+ 695:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** {
+ 696:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Calculate the constants required to configure the tick interrupt. */
+ 697:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     #if ( configUSE_TICKLESS_IDLE == 1 )
+ 698:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         {
+ 699:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             ulTimerCountsForOneTick = ( configSYSTICK_CLOCK_HZ / configTICK_RATE_HZ );
+ 700:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             xMaximumPossibleSuppressedTicks = portMAX_24_BIT_NUMBER / ulTimerCountsForOneTick;
+ 701:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             ulStoppedTimerCompensation = portMISSED_COUNTS_FACTOR / ( configCPU_CLOCK_HZ / configSY
+ 702:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         }
+ 703:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     #endif /* configUSE_TICKLESS_IDLE */
+ 704:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 705:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Stop and clear the SysTick. */
+ 706:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     portNVIC_SYSTICK_CTRL_REG = 0UL;
+ 707:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     portNVIC_SYSTICK_CURRENT_VALUE_REG = 0UL;
+ 708:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 709:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Configure SysTick to interrupt at the requested rate. */
+ 710:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     portNVIC_SYSTICK_LOAD_REG = ( configSYSTICK_CLOCK_HZ / configTICK_RATE_HZ ) - 1UL;
+ 711:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     portNVIC_SYSTICK_CTRL_REG = ( portNVIC_SYSTICK_CLK_BIT | portNVIC_SYSTICK_INT_BIT | portNVIC_SY
+ 712:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 713:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 714:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 715:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /* This is a naked function. */
+ 716:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** static void vPortEnableVFP( void )
+ 717:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** {
+ 161              		.loc 1 717 1 is_stmt 1 view -0
+ 162              		.cfi_startproc
+ 163              		@ Naked Function: prologue and epilogue provided by programmer.
+ 164              		@ args = 0, pretend = 0, frame = 0
+ 165              		@ frame_needed = 0, uses_anonymous_args = 0
+ 718:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     __asm volatile
+ 166              		.loc 1 718 5 view .LVU27
+ 167              		.syntax unified
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 20
+
+
+ 168              	@ 718 "FreeRTOS/portable/GCC/ARM_CM4F/port.c" 1
+ 169 0000 DFF80C00 			ldr.w r0, =0xE000ED88		
+ 170 0004 0168     		ldr r1, [r0]				
+ 171              									
+ 172 0006 41F47001 		orr r1, r1, #( 0xf << 20 )	
+ 173 000a 0160     		str r1, [r0]				
+ 174 000c 7047     		bx r14						
+ 175 000e 000088ED 		.ltorg						
+ 175      00E0
+ 176              	
+ 177              	@ 0 "" 2
+ 719:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     (
+ 720:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	ldr.w r0, =0xE000ED88		\n"/* The FPU enable bits are in the CPACR. */
+ 721:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	ldr r1, [r0]				\n"
+ 722:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "								\n"
+ 723:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	orr r1, r1, #( 0xf << 20 )	\n"/* Enable CP10 and CP11 coprocessors, then save back. */
+ 724:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	str r1, [r0]				\n"
+ 725:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	bx r14						\n"
+ 726:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	.ltorg						\n"
+ 727:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     );
+ 728:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 178              		.loc 1 728 1 is_stmt 0 view .LVU28
+ 179              		.thumb
+ 180              		.syntax unified
+ 181              		.cfi_endproc
+ 182              	.LFE16:
+ 184              		.section	.text.pxPortInitialiseStack,"ax",%progbits
+ 185              		.align	1
+ 186              		.global	pxPortInitialiseStack
+ 187              		.syntax unified
+ 188              		.thumb
+ 189              		.thumb_func
+ 191              	pxPortInitialiseStack:
+ 192              	.LVL2:
+ 193              	.LFB5:
+ 190:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Simulate the stack frame as it would be created by a context switch
+ 194              		.loc 1 190 1 is_stmt 1 view -0
+ 195              		.cfi_startproc
+ 196              		@ args = 0, pretend = 0, frame = 0
+ 197              		@ frame_needed = 0, uses_anonymous_args = 0
+ 198              		@ link register save eliminated.
+ 196:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 199              		.loc 1 196 5 view .LVU30
+ 198:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     pxTopOfStack--;
+ 200              		.loc 1 198 5 view .LVU31
+ 198:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     pxTopOfStack--;
+ 201              		.loc 1 198 19 is_stmt 0 view .LVU32
+ 202 0000 4FF08073 		mov	r3, #16777216
+ 203 0004 40F8043C 		str	r3, [r0, #-4]
+ 199:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     *pxTopOfStack = ( ( StackType_t ) pxCode ) & portSTART_ADDRESS_MASK; /* PC */
+ 204              		.loc 1 199 5 is_stmt 1 view .LVU33
+ 205              	.LVL3:
+ 200:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     pxTopOfStack--;
+ 206              		.loc 1 200 5 view .LVU34
+ 200:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     pxTopOfStack--;
+ 207              		.loc 1 200 48 is_stmt 0 view .LVU35
+ 208 0008 21F00101 		bic	r1, r1, #1
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 21
+
+
+ 209              	.LVL4:
+ 200:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     pxTopOfStack--;
+ 210              		.loc 1 200 19 view .LVU36
+ 211 000c 40F8081C 		str	r1, [r0, #-8]
+ 201:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     *pxTopOfStack = ( StackType_t ) portTASK_RETURN_ADDRESS;             /* LR */
+ 212              		.loc 1 201 5 is_stmt 1 view .LVU37
+ 213              	.LVL5:
+ 202:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 214              		.loc 1 202 5 view .LVU38
+ 202:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 215              		.loc 1 202 21 is_stmt 0 view .LVU39
+ 216 0010 054B     		ldr	r3, .L11
+ 202:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 217              		.loc 1 202 19 view .LVU40
+ 218 0012 40F80C3C 		str	r3, [r0, #-12]
+ 205:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     *pxTopOfStack = ( StackType_t ) pvParameters; /* R0 */
+ 219              		.loc 1 205 5 is_stmt 1 view .LVU41
+ 220              	.LVL6:
+ 206:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 221              		.loc 1 206 5 view .LVU42
+ 206:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 222              		.loc 1 206 19 is_stmt 0 view .LVU43
+ 223 0016 40F8202C 		str	r2, [r0, #-32]
+ 210:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     *pxTopOfStack = portINITIAL_EXC_RETURN;
+ 224              		.loc 1 210 5 is_stmt 1 view .LVU44
+ 225              	.LVL7:
+ 211:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 226              		.loc 1 211 5 view .LVU45
+ 211:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 227              		.loc 1 211 19 is_stmt 0 view .LVU46
+ 228 001a 6FF00203 		mvn	r3, #2
+ 229 001e 40F8243C 		str	r3, [r0, #-36]
+ 213:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 230              		.loc 1 213 5 is_stmt 1 view .LVU47
+ 231              	.LVL8:
+ 215:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 232              		.loc 1 215 5 view .LVU48
+ 216:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 233              		.loc 1 216 1 is_stmt 0 view .LVU49
+ 234 0022 4438     		subs	r0, r0, #68
+ 235              	.LVL9:
+ 216:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 236              		.loc 1 216 1 view .LVU50
+ 237 0024 7047     		bx	lr
+ 238              	.L12:
+ 239 0026 00BF     		.align	2
+ 240              	.L11:
+ 241 0028 00000000 		.word	prvTaskExitError
+ 242              		.cfi_endproc
+ 243              	.LFE5:
+ 245              		.section	.text.SVC_Handler,"ax",%progbits
+ 246              		.align	1
+ 247              		.global	SVC_Handler
+ 248              		.syntax unified
+ 249              		.thumb
+ 250              		.thumb_func
+ 252              	SVC_Handler:
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 22
+
+
+ 253              	.LFB7:
+ 246:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     __asm volatile (
+ 254              		.loc 1 246 1 is_stmt 1 view -0
+ 255              		.cfi_startproc
+ 256              		@ Naked Function: prologue and epilogue provided by programmer.
+ 257              		@ args = 0, pretend = 0, frame = 0
+ 258              		@ frame_needed = 0, uses_anonymous_args = 0
+ 247:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         "	ldr	r3, pxCurrentTCBConst2		\n"/* Restore the context. */
+ 259              		.loc 1 247 5 view .LVU52
+ 260              		.syntax unified
+ 261              	@ 247 "FreeRTOS/portable/GCC/ARM_CM4F/port.c" 1
+ 262 0000 074B     			ldr	r3, pxCurrentTCBConst2		
+ 263 0002 1968     		ldr r1, [r3]					
+ 264 0004 0868     		ldr r0, [r1]					
+ 265 0006 B0E8F04F 		ldmia r0!, {r4-r11, r14}		
+ 266 000a 80F30988 		msr psp, r0						
+ 267 000e BFF36F8F 		isb								
+ 268 0012 4FF00000 		mov r0, #0 						
+ 269 0016 80F31188 		msr	basepri, r0					
+ 270 001a 7047     		bx r14							
+ 271              										
+ 272 001c AFF30080 		.align 4						
+ 273 0020 00000000 	pxCurrentTCBConst2: .word pxCurrentTCB				
+ 274              	
+ 275              	@ 0 "" 2
+ 261:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 276              		.loc 1 261 1 is_stmt 0 view .LVU53
+ 277              		.thumb
+ 278              		.syntax unified
+ 279              		.cfi_endproc
+ 280              	.LFE7:
+ 282              		.section	.text.vPortEndScheduler,"ax",%progbits
+ 283              		.align	1
+ 284              		.global	vPortEndScheduler
+ 285              		.syntax unified
+ 286              		.thumb
+ 287              		.thumb_func
+ 289              	vPortEndScheduler:
+ 290              	.LFB10:
+ 401:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Not implemented in ports where there is nothing to return to.
+ 291              		.loc 1 401 1 is_stmt 1 view -0
+ 292              		.cfi_startproc
+ 293              		@ args = 0, pretend = 0, frame = 0
+ 294              		@ frame_needed = 0, uses_anonymous_args = 0
+ 295              		@ link register save eliminated.
+ 404:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 296              		.loc 1 404 5 view .LVU55
+ 297 0000 074B     		ldr	r3, .L17
+ 298 0002 1B68     		ldr	r3, [r3]
+ 299 0004 B3F57A7F 		cmp	r3, #1000
+ 300 0008 08D0     		beq	.L14
+ 404:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 301              		.loc 1 404 5 view .LVU56
+ 302              	.LBB37:
+ 303              	.LBI37:
+ 193:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     {
+ 304              		.loc 2 193 34 view .LVU57
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 23
+
+
+ 305              	.LBB38:
+ 195:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 306              		.loc 2 195 9 view .LVU58
+ 307              		.loc 2 197 9 view .LVU59
+ 308              		.syntax unified
+ 309              	@ 197 "FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h" 1
+ 310 000a 4FF05003 			mov r3, #80												
+ 311 000e 83F31188 		msr basepri, r3											
+ 312 0012 BFF36F8F 		isb														
+ 313 0016 BFF34F8F 		dsb														
+ 314              	
+ 315              	@ 0 "" 2
+ 316              	.LVL10:
+ 317              		.thumb
+ 318              		.syntax unified
+ 319              	.L16:
+ 320              		.loc 2 197 9 is_stmt 0 view .LVU60
+ 321              	.LBE38:
+ 322              	.LBE37:
+ 404:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 323              		.loc 1 404 5 is_stmt 1 discriminator 1 view .LVU61
+ 404:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 324              		.loc 1 404 5 discriminator 1 view .LVU62
+ 404:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 325              		.loc 1 404 5 discriminator 1 view .LVU63
+ 326 001a FEE7     		b	.L16
+ 327              	.L14:
+ 405:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 328              		.loc 1 405 1 is_stmt 0 view .LVU64
+ 329 001c 7047     		bx	lr
+ 330              	.L18:
+ 331 001e 00BF     		.align	2
+ 332              	.L17:
+ 333 0020 00000000 		.word	.LANCHOR0
+ 334              		.cfi_endproc
+ 335              	.LFE10:
+ 337              		.section	.text.vPortEnterCritical,"ax",%progbits
+ 338              		.align	1
+ 339              		.global	vPortEnterCritical
+ 340              		.syntax unified
+ 341              		.thumb
+ 342              		.thumb_func
+ 344              	vPortEnterCritical:
+ 345              	.LFB11:
+ 409:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     portDISABLE_INTERRUPTS();
+ 346              		.loc 1 409 1 is_stmt 1 view -0
+ 347              		.cfi_startproc
+ 348              		@ args = 0, pretend = 0, frame = 0
+ 349              		@ frame_needed = 0, uses_anonymous_args = 0
+ 350              		@ link register save eliminated.
+ 410:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     uxCriticalNesting++;
+ 351              		.loc 1 410 5 view .LVU66
+ 352              	.LBB39:
+ 353              	.LBI39:
+ 193:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     {
+ 354              		.loc 2 193 34 view .LVU67
+ 355              	.LBB40:
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 24
+
+
+ 195:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 356              		.loc 2 195 9 view .LVU68
+ 357              		.loc 2 197 9 view .LVU69
+ 358              		.syntax unified
+ 359              	@ 197 "FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h" 1
+ 360 0000 4FF05003 			mov r3, #80												
+ 361 0004 83F31188 		msr basepri, r3											
+ 362 0008 BFF36F8F 		isb														
+ 363 000c BFF34F8F 		dsb														
+ 364              	
+ 365              	@ 0 "" 2
+ 366              		.thumb
+ 367              		.syntax unified
+ 368              	.LBE40:
+ 369              	.LBE39:
+ 411:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 370              		.loc 1 411 5 view .LVU70
+ 411:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 371              		.loc 1 411 22 is_stmt 0 view .LVU71
+ 372 0010 0B4A     		ldr	r2, .L23
+ 373 0012 1368     		ldr	r3, [r2]
+ 374 0014 0133     		adds	r3, r3, #1
+ 375 0016 1360     		str	r3, [r2]
+ 418:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     {
+ 376              		.loc 1 418 5 is_stmt 1 view .LVU72
+ 418:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     {
+ 377              		.loc 1 418 7 is_stmt 0 view .LVU73
+ 378 0018 012B     		cmp	r3, #1
+ 379 001a 00D0     		beq	.L22
+ 380              	.L19:
+ 422:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 381              		.loc 1 422 1 view .LVU74
+ 382 001c 7047     		bx	lr
+ 383              	.L22:
+ 420:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     }
+ 384              		.loc 1 420 9 is_stmt 1 view .LVU75
+ 385 001e 4FF0E023 		mov	r3, #-536813568
+ 386 0022 D3F8043D 		ldr	r3, [r3, #3332]
+ 387 0026 13F0FF0F 		tst	r3, #255
+ 388 002a F7D0     		beq	.L19
+ 420:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     }
+ 389              		.loc 1 420 9 view .LVU76
+ 390              	.LBB41:
+ 391              	.LBI41:
+ 193:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     {
+ 392              		.loc 2 193 34 view .LVU77
+ 393              	.LBB42:
+ 195:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 394              		.loc 2 195 9 view .LVU78
+ 395              		.loc 2 197 9 view .LVU79
+ 396              		.syntax unified
+ 397              	@ 197 "FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h" 1
+ 398 002c 4FF05003 			mov r3, #80												
+ 399 0030 83F31188 		msr basepri, r3											
+ 400 0034 BFF36F8F 		isb														
+ 401 0038 BFF34F8F 		dsb														
+ 402              	
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 25
+
+
+ 403              	@ 0 "" 2
+ 404              	.LVL11:
+ 405              		.thumb
+ 406              		.syntax unified
+ 407              	.L21:
+ 408              		.loc 2 197 9 is_stmt 0 view .LVU80
+ 409              	.LBE42:
+ 410              	.LBE41:
+ 420:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     }
+ 411              		.loc 1 420 9 is_stmt 1 discriminator 1 view .LVU81
+ 420:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     }
+ 412              		.loc 1 420 9 discriminator 1 view .LVU82
+ 420:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     }
+ 413              		.loc 1 420 9 discriminator 1 view .LVU83
+ 414 003c FEE7     		b	.L21
+ 415              	.L24:
+ 416 003e 00BF     		.align	2
+ 417              	.L23:
+ 418 0040 00000000 		.word	.LANCHOR0
+ 419              		.cfi_endproc
+ 420              	.LFE11:
+ 422              		.section	.text.vPortExitCritical,"ax",%progbits
+ 423              		.align	1
+ 424              		.global	vPortExitCritical
+ 425              		.syntax unified
+ 426              		.thumb
+ 427              		.thumb_func
+ 429              	vPortExitCritical:
+ 430              	.LFB12:
+ 426:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     configASSERT( uxCriticalNesting );
+ 431              		.loc 1 426 1 view -0
+ 432              		.cfi_startproc
+ 433              		@ args = 0, pretend = 0, frame = 0
+ 434              		@ frame_needed = 0, uses_anonymous_args = 0
+ 435              		@ link register save eliminated.
+ 427:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     uxCriticalNesting--;
+ 436              		.loc 1 427 5 view .LVU85
+ 437 0000 094B     		ldr	r3, .L29
+ 438 0002 1B68     		ldr	r3, [r3]
+ 439 0004 43B9     		cbnz	r3, .L26
+ 427:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     uxCriticalNesting--;
+ 440              		.loc 1 427 5 view .LVU86
+ 441              	.LBB43:
+ 442              	.LBI43:
+ 193:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     {
+ 443              		.loc 2 193 34 view .LVU87
+ 444              	.LBB44:
+ 195:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 445              		.loc 2 195 9 view .LVU88
+ 446              		.loc 2 197 9 view .LVU89
+ 447              		.syntax unified
+ 448              	@ 197 "FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h" 1
+ 449 0006 4FF05003 			mov r3, #80												
+ 450 000a 83F31188 		msr basepri, r3											
+ 451 000e BFF36F8F 		isb														
+ 452 0012 BFF34F8F 		dsb														
+ 453              	
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 26
+
+
+ 454              	@ 0 "" 2
+ 455              	.LVL12:
+ 456              		.thumb
+ 457              		.syntax unified
+ 458              	.L27:
+ 459              		.loc 2 197 9 is_stmt 0 view .LVU90
+ 460              	.LBE44:
+ 461              	.LBE43:
+ 427:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     uxCriticalNesting--;
+ 462              		.loc 1 427 5 is_stmt 1 discriminator 1 view .LVU91
+ 427:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     uxCriticalNesting--;
+ 463              		.loc 1 427 5 discriminator 1 view .LVU92
+ 427:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     uxCriticalNesting--;
+ 464              		.loc 1 427 5 discriminator 1 view .LVU93
+ 465 0016 FEE7     		b	.L27
+ 466              	.L26:
+ 427:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     uxCriticalNesting--;
+ 467              		.loc 1 427 38 discriminator 2 view .LVU94
+ 428:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 468              		.loc 1 428 5 discriminator 2 view .LVU95
+ 428:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 469              		.loc 1 428 22 is_stmt 0 discriminator 2 view .LVU96
+ 470 0018 013B     		subs	r3, r3, #1
+ 471 001a 034A     		ldr	r2, .L29
+ 472 001c 1360     		str	r3, [r2]
+ 430:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     {
+ 473              		.loc 1 430 5 is_stmt 1 discriminator 2 view .LVU97
+ 430:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     {
+ 474              		.loc 1 430 7 is_stmt 0 discriminator 2 view .LVU98
+ 475 001e 0BB9     		cbnz	r3, .L25
+ 432:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     }
+ 476              		.loc 1 432 9 is_stmt 1 view .LVU99
+ 477              	.LVL13:
+ 478              	.LBB45:
+ 479              	.LBI45:
+ 198:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         (
+ 199:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****             "	mov %0, %1												\n"\
+ 200:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****             "	msr basepri, %0											\n"\
+ 201:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****             "	isb														\n"\
+ 202:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****             "	dsb														\n"\
+ 203:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****             : "=r" ( ulNewBASEPRI ) : "i" ( configMAX_SYSCALL_INTERRUPT_PRIORITY ) : "memory"
+ 204:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         );
+ 205:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     }
+ 206:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 207:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /*-----------------------------------------------------------*/
+ 208:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 209:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     portFORCE_INLINE static uint32_t ulPortRaiseBASEPRI( void )
+ 210:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     {
+ 211:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         uint32_t ulOriginalBASEPRI, ulNewBASEPRI;
+ 212:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 213:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         __asm volatile
+ 214:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         (
+ 215:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****             "	mrs %0, basepri											\n"\
+ 216:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****             "	mov %1, %2												\n"\
+ 217:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****             "	msr basepri, %1											\n"\
+ 218:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****             "	isb														\n"\
+ 219:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****             "	dsb														\n"\
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 27
+
+
+ 220:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****             : "=r" ( ulOriginalBASEPRI ), "=r" ( ulNewBASEPRI ) : "i" ( configMAX_SYSCALL_INTERRUPT
+ 221:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         );
+ 222:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 223:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         /* This return will not be reached but is necessary to prevent compiler
+ 224:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****          * warnings. */
+ 225:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         return ulOriginalBASEPRI;
+ 226:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     }
+ 227:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** /*-----------------------------------------------------------*/
+ 228:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 229:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     portFORCE_INLINE static void vPortSetBASEPRI( uint32_t ulNewMaskValue )
+ 480              		.loc 2 229 34 view .LVU100
+ 481              	.LBB46:
+ 230:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     {
+ 231:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         __asm volatile
+ 482              		.loc 2 231 9 view .LVU101
+ 483              		.syntax unified
+ 484              	@ 231 "FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h" 1
+ 485 0020 83F31188 			msr basepri, r3	
+ 486              	@ 0 "" 2
+ 487              	.LVL14:
+ 488              		.thumb
+ 489              		.syntax unified
+ 490              	.L25:
+ 491              		.loc 2 231 9 is_stmt 0 view .LVU102
+ 492              	.LBE46:
+ 493              	.LBE45:
+ 434:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 494              		.loc 1 434 1 view .LVU103
+ 495 0024 7047     		bx	lr
+ 496              	.L30:
+ 497 0026 00BF     		.align	2
+ 498              	.L29:
+ 499 0028 00000000 		.word	.LANCHOR0
+ 500              		.cfi_endproc
+ 501              	.LFE12:
+ 503              		.section	.text.PendSV_Handler,"ax",%progbits
+ 504              		.align	1
+ 505              		.global	PendSV_Handler
+ 506              		.syntax unified
+ 507              		.thumb
+ 508              		.thumb_func
+ 510              	PendSV_Handler:
+ 511              	.LFB13:
+ 438:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* This is a naked function. */
+ 512              		.loc 1 438 1 is_stmt 1 view -0
+ 513              		.cfi_startproc
+ 514              		@ Naked Function: prologue and epilogue provided by programmer.
+ 515              		@ args = 0, pretend = 0, frame = 0
+ 516              		@ frame_needed = 0, uses_anonymous_args = 0
+ 441:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     (
+ 517              		.loc 1 441 5 view .LVU105
+ 518              		.syntax unified
+ 519              	@ 441 "FreeRTOS/portable/GCC/ARM_CM4F/port.c" 1
+ 520 0000 EFF30980 			mrs r0, psp							
+ 521 0004 BFF36F8F 		isb									
+ 522              											
+ 523 0008 154B     		ldr	r3, pxCurrentTCBConst			
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 28
+
+
+ 524 000a 1A68     		ldr	r2, [r3]						
+ 525              											
+ 526 000c 1EF0100F 		tst r14, #0x10						
+ 527 0010 08BF     		it eq								
+ 528 0012 20ED108A 		vstmdbeq r0!, {s16-s31}				
+ 529              											
+ 530 0016 20E9F04F 		stmdb r0!, {r4-r11, r14}			
+ 531 001a 1060     		str r0, [r2]						
+ 532              											
+ 533 001c 2DE90900 		stmdb sp!, {r0, r3}					
+ 534 0020 4FF05000 		mov r0, #80 							
+ 535 0024 80F31188 		msr basepri, r0						
+ 536 0028 BFF34F8F 		dsb									
+ 537 002c BFF36F8F 		isb									
+ 538 0030 FFF7FEFF 		bl vTaskSwitchContext				
+ 539 0034 4FF00000 		mov r0, #0							
+ 540 0038 80F31188 		msr basepri, r0						
+ 541 003c 09BC     		ldmia sp!, {r0, r3}					
+ 542              											
+ 543 003e 1968     		ldr r1, [r3]						
+ 544 0040 0868     		ldr r0, [r1]						
+ 545              											
+ 546 0042 B0E8F04F 		ldmia r0!, {r4-r11, r14}			
+ 547              											
+ 548 0046 1EF0100F 		tst r14, #0x10						
+ 549 004a 08BF     		it eq								
+ 550 004c B0EC108A 		vldmiaeq r0!, {s16-s31}				
+ 551              											
+ 552 0050 80F30988 		msr psp, r0							
+ 553 0054 BFF36F8F 		isb									
+ 554              											
+ 555              											
+ 556 0058 7047     		bx r14								
+ 557              											
+ 558 005a 00BFAFF3 		.align 4							
+ 558      0080
+ 559 0060 00000000 	pxCurrentTCBConst: .word pxCurrentTCB	
+ 560              	
+ 561              	@ 0 "" 2
+ 491:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 562              		.loc 1 491 1 is_stmt 0 view .LVU106
+ 563              		.thumb
+ 564              		.syntax unified
+ 565              		.cfi_endproc
+ 566              	.LFE13:
+ 568              		.section	.text.SysTick_Handler,"ax",%progbits
+ 569              		.align	1
+ 570              		.global	SysTick_Handler
+ 571              		.syntax unified
+ 572              		.thumb
+ 573              		.thumb_func
+ 575              	SysTick_Handler:
+ 576              	.LFB14:
+ 495:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* The SysTick runs at the lowest interrupt priority, so when this interrupt
+ 577              		.loc 1 495 1 is_stmt 1 view -0
+ 578              		.cfi_startproc
+ 579              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 29
+
+
+ 580              		@ frame_needed = 0, uses_anonymous_args = 0
+ 581 0000 08B5     		push	{r3, lr}
+ 582              	.LCFI2:
+ 583              		.cfi_def_cfa_offset 8
+ 584              		.cfi_offset 3, -8
+ 585              		.cfi_offset 14, -4
+ 500:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     traceISR_ENTER();
+ 586              		.loc 1 500 5 view .LVU108
+ 587              	.LBB47:
+ 588              	.LBI47:
+ 193:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     {
+ 589              		.loc 2 193 34 view .LVU109
+ 590              	.LBB48:
+ 195:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 591              		.loc 2 195 9 view .LVU110
+ 197:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         (
+ 592              		.loc 2 197 9 view .LVU111
+ 593              		.syntax unified
+ 594              	@ 197 "FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h" 1
+ 595 0002 4FF05003 			mov r3, #80												
+ 596 0006 83F31188 		msr basepri, r3											
+ 597 000a BFF36F8F 		isb														
+ 598 000e BFF34F8F 		dsb														
+ 599              	
+ 600              	@ 0 "" 2
+ 601              		.thumb
+ 602              		.syntax unified
+ 603              	.LBE48:
+ 604              	.LBE47:
+ 501:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     {
+ 605              		.loc 1 501 5 view .LVU112
+ 606 0012 FFF7FEFF 		bl	SEGGER_SYSVIEW_RecordEnterISR
+ 607              	.LVL15:
+ 504:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         {
+ 608              		.loc 1 504 9 view .LVU113
+ 504:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         {
+ 609              		.loc 1 504 13 is_stmt 0 view .LVU114
+ 610 0016 FFF7FEFF 		bl	xTaskIncrementTick
+ 611              	.LVL16:
+ 504:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         {
+ 612              		.loc 1 504 11 view .LVU115
+ 613 001a 58B1     		cbz	r0, .L33
+ 506:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* A context switch is required.  Context switching is performed in
+ 614              		.loc 1 506 13 is_stmt 1 view .LVU116
+ 615 001c FFF7FEFF 		bl	SEGGER_SYSVIEW_RecordExitISRToScheduler
+ 616              	.LVL17:
+ 509:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         }
+ 617              		.loc 1 509 13 view .LVU117
+ 509:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         }
+ 618              		.loc 1 509 35 is_stmt 0 view .LVU118
+ 619 0020 4FF0E023 		mov	r3, #-536813568
+ 620 0024 4FF08052 		mov	r2, #268435456
+ 621 0028 C3F8042D 		str	r2, [r3, #3332]
+ 622              	.L34:
+ 516:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 623              		.loc 1 516 5 is_stmt 1 view .LVU119
+ 624              	.LVL18:
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 30
+
+
+ 625              	.LBB49:
+ 626              	.LBI49:
+ 229:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     {
+ 627              		.loc 2 229 34 view .LVU120
+ 628              	.LBB50:
+ 629              		.loc 2 231 9 view .LVU121
+ 630 002c 0023     		movs	r3, #0
+ 631              		.syntax unified
+ 632              	@ 231 "FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h" 1
+ 633 002e 83F31188 			msr basepri, r3	
+ 634              	@ 0 "" 2
+ 635              	.LVL19:
+ 636              		.loc 2 231 9 is_stmt 0 view .LVU122
+ 637              		.thumb
+ 638              		.syntax unified
+ 639              	.LBE50:
+ 640              	.LBE49:
+ 517:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 641              		.loc 1 517 1 view .LVU123
+ 642 0032 08BD     		pop	{r3, pc}
+ 643              	.L33:
+ 513:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         }
+ 644              		.loc 1 513 13 is_stmt 1 view .LVU124
+ 645 0034 FFF7FEFF 		bl	SEGGER_SYSVIEW_RecordExitISR
+ 646              	.LVL20:
+ 647 0038 F8E7     		b	.L34
+ 648              		.cfi_endproc
+ 649              	.LFE14:
+ 651              		.section	.text.vPortSetupTimerInterrupt,"ax",%progbits
+ 652              		.align	1
+ 653              		.weak	vPortSetupTimerInterrupt
+ 654              		.syntax unified
+ 655              		.thumb
+ 656              		.thumb_func
+ 658              	vPortSetupTimerInterrupt:
+ 659              	.LFB15:
+ 695:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* Calculate the constants required to configure the tick interrupt. */
+ 660              		.loc 1 695 1 view -0
+ 661              		.cfi_startproc
+ 662              		@ args = 0, pretend = 0, frame = 0
+ 663              		@ frame_needed = 0, uses_anonymous_args = 0
+ 664              		@ link register save eliminated.
+ 706:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     portNVIC_SYSTICK_CURRENT_VALUE_REG = 0UL;
+ 665              		.loc 1 706 5 view .LVU126
+ 706:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     portNVIC_SYSTICK_CURRENT_VALUE_REG = 0UL;
+ 666              		.loc 1 706 31 is_stmt 0 view .LVU127
+ 667 0000 4FF0E022 		mov	r2, #-536813568
+ 668 0004 0023     		movs	r3, #0
+ 669 0006 1361     		str	r3, [r2, #16]
+ 707:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 670              		.loc 1 707 5 is_stmt 1 view .LVU128
+ 707:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 671              		.loc 1 707 40 is_stmt 0 view .LVU129
+ 672 0008 9361     		str	r3, [r2, #24]
+ 710:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     portNVIC_SYSTICK_CTRL_REG = ( portNVIC_SYSTICK_CLK_BIT | portNVIC_SYSTICK_INT_BIT | portNVIC_SY
+ 673              		.loc 1 710 5 is_stmt 1 view .LVU130
+ 710:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     portNVIC_SYSTICK_CTRL_REG = ( portNVIC_SYSTICK_CLK_BIT | portNVIC_SYSTICK_INT_BIT | portNVIC_SY
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 31
+
+
+ 674              		.loc 1 710 58 is_stmt 0 view .LVU131
+ 675 000a 054B     		ldr	r3, .L37
+ 676 000c 1B68     		ldr	r3, [r3]
+ 677 000e 0549     		ldr	r1, .L37+4
+ 678 0010 A1FB0313 		umull	r1, r3, r1, r3
+ 679 0014 5B09     		lsrs	r3, r3, #5
+ 710:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     portNVIC_SYSTICK_CTRL_REG = ( portNVIC_SYSTICK_CLK_BIT | portNVIC_SYSTICK_INT_BIT | portNVIC_SY
+ 680              		.loc 1 710 81 view .LVU132
+ 681 0016 013B     		subs	r3, r3, #1
+ 710:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     portNVIC_SYSTICK_CTRL_REG = ( portNVIC_SYSTICK_CLK_BIT | portNVIC_SYSTICK_INT_BIT | portNVIC_SY
+ 682              		.loc 1 710 31 view .LVU133
+ 683 0018 5361     		str	r3, [r2, #20]
+ 711:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 684              		.loc 1 711 5 is_stmt 1 view .LVU134
+ 711:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 685              		.loc 1 711 31 is_stmt 0 view .LVU135
+ 686 001a 0723     		movs	r3, #7
+ 687 001c 1361     		str	r3, [r2, #16]
+ 712:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 688              		.loc 1 712 1 view .LVU136
+ 689 001e 7047     		bx	lr
+ 690              	.L38:
+ 691              		.align	2
+ 692              	.L37:
+ 693 0020 00000000 		.word	SystemCoreClock
+ 694 0024 D34D6210 		.word	274877907
+ 695              		.cfi_endproc
+ 696              	.LFE15:
+ 698              		.section	.text.xPortStartScheduler,"ax",%progbits
+ 699              		.align	1
+ 700              		.global	xPortStartScheduler
+ 701              		.syntax unified
+ 702              		.thumb
+ 703              		.thumb_func
+ 705              	xPortStartScheduler:
+ 706              	.LFB9:
+ 292:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* configMAX_SYSCALL_INTERRUPT_PRIORITY must not be set to 0.
+ 707              		.loc 1 292 1 is_stmt 1 view -0
+ 708              		.cfi_startproc
+ 709              		@ args = 0, pretend = 0, frame = 8
+ 710              		@ frame_needed = 0, uses_anonymous_args = 0
+ 295:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 711              		.loc 1 295 5 view .LVU138
+ 295:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 712              		.loc 1 295 57 view .LVU139
+ 300:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     configASSERT( portCPUID != portCORTEX_M7_r0p0_ID );
+ 713              		.loc 1 300 5 view .LVU140
+ 714 0000 4FF0E023 		mov	r3, #-536813568
+ 715 0004 D3F8002D 		ldr	r2, [r3, #3328]
+ 716 0008 3D4B     		ldr	r3, .L52
+ 717 000a 9A42     		cmp	r2, r3
+ 718 000c 1CD0     		beq	.L50
+ 300:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     configASSERT( portCPUID != portCORTEX_M7_r0p0_ID );
+ 719              		.loc 1 300 55 discriminator 2 view .LVU141
+ 301:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 720              		.loc 1 301 5 discriminator 2 view .LVU142
+ 721 000e 4FF0E023 		mov	r3, #-536813568
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 32
+
+
+ 722 0012 D3F8002D 		ldr	r2, [r3, #3328]
+ 723 0016 3B4B     		ldr	r3, .L52+4
+ 724 0018 9A42     		cmp	r2, r3
+ 725 001a 1ED0     		beq	.L51
+ 292:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     /* configMAX_SYSCALL_INTERRUPT_PRIORITY must not be set to 0.
+ 726              		.loc 1 292 1 is_stmt 0 discriminator 2 view .LVU143
+ 727 001c 30B5     		push	{r4, r5, lr}
+ 728              	.LCFI3:
+ 729              		.cfi_def_cfa_offset 12
+ 730              		.cfi_offset 4, -12
+ 731              		.cfi_offset 5, -8
+ 732              		.cfi_offset 14, -4
+ 733 001e 83B0     		sub	sp, sp, #12
+ 734              	.LCFI4:
+ 735              		.cfi_def_cfa_offset 24
+ 301:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 736              		.loc 1 301 55 is_stmt 1 discriminator 2 view .LVU144
+ 737              	.LBB51:
+ 305:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             volatile uint8_t * const pucFirstUserPriorityRegister = ( volatile uint8_t * const ) ( 
+ 738              		.loc 1 305 13 discriminator 2 view .LVU145
+ 306:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             volatile uint8_t ucMaxPriorityValue;
+ 739              		.loc 1 306 13 discriminator 2 view .LVU146
+ 740              	.LVL21:
+ 307:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 741              		.loc 1 307 13 discriminator 2 view .LVU147
+ 315:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 742              		.loc 1 315 13 discriminator 2 view .LVU148
+ 315:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 743              		.loc 1 315 34 is_stmt 0 discriminator 2 view .LVU149
+ 744 0020 394B     		ldr	r3, .L52+8
+ 745 0022 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 746 0024 D2B2     		uxtb	r2, r2
+ 315:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 747              		.loc 1 315 32 discriminator 2 view .LVU150
+ 748 0026 0192     		str	r2, [sp, #4]
+ 319:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 749              		.loc 1 319 13 is_stmt 1 discriminator 2 view .LVU151
+ 319:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 750              		.loc 1 319 43 is_stmt 0 discriminator 2 view .LVU152
+ 751 0028 FF22     		movs	r2, #255
+ 752 002a 1A70     		strb	r2, [r3]
+ 322:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 753              		.loc 1 322 13 is_stmt 1 discriminator 2 view .LVU153
+ 322:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 754              		.loc 1 322 34 is_stmt 0 discriminator 2 view .LVU154
+ 755 002c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 756 002e DBB2     		uxtb	r3, r3
+ 322:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 757              		.loc 1 322 32 discriminator 2 view .LVU155
+ 758 0030 8DF80330 		strb	r3, [sp, #3]
+ 325:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 759              		.loc 1 325 13 is_stmt 1 discriminator 2 view .LVU156
+ 325:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 760              		.loc 1 325 73 is_stmt 0 discriminator 2 view .LVU157
+ 761 0034 9DF80330 		ldrb	r3, [sp, #3]	@ zero_extendqisi2
+ 762 0038 03F05003 		and	r3, r3, #80
+ 325:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 33
+
+
+ 763              		.loc 1 325 34 discriminator 2 view .LVU158
+ 764 003c 334A     		ldr	r2, .L52+12
+ 765 003e 1370     		strb	r3, [r2]
+ 329:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 766              		.loc 1 329 13 is_stmt 1 discriminator 2 view .LVU159
+ 329:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 767              		.loc 1 329 32 is_stmt 0 discriminator 2 view .LVU160
+ 768 0040 334B     		ldr	r3, .L52+16
+ 769 0042 0722     		movs	r2, #7
+ 770 0044 1A60     		str	r2, [r3]
+ 331:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             {
+ 771              		.loc 1 331 13 is_stmt 1 discriminator 2 view .LVU161
+ 331:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             {
+ 772              		.loc 1 331 18 is_stmt 0 discriminator 2 view .LVU162
+ 773 0046 1BE0     		b	.L44
+ 774              	.LVL22:
+ 775              	.L50:
+ 776              	.LCFI5:
+ 777              		.cfi_def_cfa_offset 0
+ 778              		.cfi_restore 4
+ 779              		.cfi_restore 5
+ 780              		.cfi_restore 14
+ 331:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             {
+ 781              		.loc 1 331 18 discriminator 2 view .LVU163
+ 782              	.LBE51:
+ 300:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     configASSERT( portCPUID != portCORTEX_M7_r0p0_ID );
+ 783              		.loc 1 300 5 is_stmt 1 view .LVU164
+ 784              	.LBB54:
+ 785              	.LBI54:
+ 193:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     {
+ 786              		.loc 2 193 34 view .LVU165
+ 787              	.LBB55:
+ 195:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 788              		.loc 2 195 9 view .LVU166
+ 197:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         (
+ 789              		.loc 2 197 9 view .LVU167
+ 790              		.syntax unified
+ 791              	@ 197 "FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h" 1
+ 792 0048 4FF05003 			mov r3, #80												
+ 793 004c 83F31188 		msr basepri, r3											
+ 794 0050 BFF36F8F 		isb														
+ 795 0054 BFF34F8F 		dsb														
+ 796              	
+ 797              	@ 0 "" 2
+ 798              	.LVL23:
+ 799              		.thumb
+ 800              		.syntax unified
+ 801              	.L41:
+ 197:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         (
+ 802              		.loc 2 197 9 is_stmt 0 view .LVU168
+ 803              	.LBE55:
+ 804              	.LBE54:
+ 300:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     configASSERT( portCPUID != portCORTEX_M7_r0p0_ID );
+ 805              		.loc 1 300 5 is_stmt 1 discriminator 2 view .LVU169
+ 300:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     configASSERT( portCPUID != portCORTEX_M7_r0p0_ID );
+ 806              		.loc 1 300 5 discriminator 2 view .LVU170
+ 300:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     configASSERT( portCPUID != portCORTEX_M7_r0p0_ID );
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 34
+
+
+ 807              		.loc 1 300 5 discriminator 2 view .LVU171
+ 808 0058 FEE7     		b	.L41
+ 809              	.L51:
+ 301:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 810              		.loc 1 301 5 view .LVU172
+ 811              	.LBB56:
+ 812              	.LBI56:
+ 193:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     {
+ 813              		.loc 2 193 34 view .LVU173
+ 814              	.LBB57:
+ 195:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 815              		.loc 2 195 9 view .LVU174
+ 197:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         (
+ 816              		.loc 2 197 9 view .LVU175
+ 817              		.syntax unified
+ 818              	@ 197 "FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h" 1
+ 819 005a 4FF05003 			mov r3, #80												
+ 820 005e 83F31188 		msr basepri, r3											
+ 821 0062 BFF36F8F 		isb														
+ 822 0066 BFF34F8F 		dsb														
+ 823              	
+ 824              	@ 0 "" 2
+ 825              	.LVL24:
+ 826              		.thumb
+ 827              		.syntax unified
+ 828              	.L43:
+ 197:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         (
+ 829              		.loc 2 197 9 is_stmt 0 view .LVU176
+ 830              	.LBE57:
+ 831              	.LBE56:
+ 301:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 832              		.loc 1 301 5 is_stmt 1 discriminator 3 view .LVU177
+ 301:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 833              		.loc 1 301 5 discriminator 3 view .LVU178
+ 301:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 834              		.loc 1 301 5 discriminator 3 view .LVU179
+ 835 006a FEE7     		b	.L43
+ 836              	.LVL25:
+ 837              	.L45:
+ 838              	.LCFI6:
+ 839              		.cfi_def_cfa_offset 24
+ 840              		.cfi_offset 4, -12
+ 841              		.cfi_offset 5, -8
+ 842              		.cfi_offset 14, -4
+ 843              	.LBB58:
+ 333:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 ucMaxPriorityValue <<= ( uint8_t ) 0x01;
+ 844              		.loc 1 333 17 view .LVU180
+ 333:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 ucMaxPriorityValue <<= ( uint8_t ) 0x01;
+ 845              		.loc 1 333 35 is_stmt 0 view .LVU181
+ 846 006c 284A     		ldr	r2, .L52+16
+ 847 006e 1368     		ldr	r3, [r2]
+ 848 0070 013B     		subs	r3, r3, #1
+ 849 0072 1360     		str	r3, [r2]
+ 334:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             }
+ 850              		.loc 1 334 17 is_stmt 1 view .LVU182
+ 334:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             }
+ 851              		.loc 1 334 36 is_stmt 0 view .LVU183
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 35
+
+
+ 852 0074 9DF80330 		ldrb	r3, [sp, #3]	@ zero_extendqisi2
+ 853 0078 5B00     		lsls	r3, r3, #1
+ 854 007a DBB2     		uxtb	r3, r3
+ 855 007c 8DF80330 		strb	r3, [sp, #3]
+ 856              	.L44:
+ 331:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             {
+ 857              		.loc 1 331 18 is_stmt 1 view .LVU184
+ 331:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             {
+ 858              		.loc 1 331 41 is_stmt 0 view .LVU185
+ 859 0080 9DF80330 		ldrb	r3, [sp, #3]	@ zero_extendqisi2
+ 331:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             {
+ 860              		.loc 1 331 18 view .LVU186
+ 861 0084 13F0800F 		tst	r3, #128
+ 862 0088 F0D1     		bne	.L45
+ 351:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 }
+ 863              		.loc 1 351 21 is_stmt 1 view .LVU187
+ 864 008a 214B     		ldr	r3, .L52+16
+ 865 008c 1B68     		ldr	r3, [r3]
+ 866 008e 032B     		cmp	r3, #3
+ 867 0090 08D0     		beq	.L46
+ 351:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 }
+ 868              		.loc 1 351 21 view .LVU188
+ 869              	.LBB52:
+ 870              	.LBI52:
+ 193:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     {
+ 871              		.loc 2 193 34 view .LVU189
+ 872              	.LBB53:
+ 195:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 873              		.loc 2 195 9 view .LVU190
+ 197:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         (
+ 874              		.loc 2 197 9 view .LVU191
+ 875              		.syntax unified
+ 876              	@ 197 "FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h" 1
+ 877 0092 4FF05003 			mov r3, #80												
+ 878 0096 83F31188 		msr basepri, r3											
+ 879 009a BFF36F8F 		isb														
+ 880 009e BFF34F8F 		dsb														
+ 881              	
+ 882              	@ 0 "" 2
+ 883              	.LVL26:
+ 884              		.thumb
+ 885              		.syntax unified
+ 886              	.L47:
+ 197:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         (
+ 887              		.loc 2 197 9 is_stmt 0 view .LVU192
+ 888              	.LBE53:
+ 889              	.LBE52:
+ 351:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 }
+ 890              		.loc 1 351 21 is_stmt 1 discriminator 4 view .LVU193
+ 351:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 }
+ 891              		.loc 1 351 21 discriminator 4 view .LVU194
+ 351:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 }
+ 892              		.loc 1 351 21 discriminator 4 view .LVU195
+ 893 00a2 FEE7     		b	.L47
+ 894              	.L46:
+ 351:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****                 }
+ 895              		.loc 1 351 102 discriminator 2 view .LVU196
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 36
+
+
+ 357:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             ulMaxPRIGROUPValue &= portPRIORITY_GROUP_MASK;
+ 896              		.loc 1 357 13 discriminator 2 view .LVU197
+ 357:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             ulMaxPRIGROUPValue &= portPRIORITY_GROUP_MASK;
+ 897              		.loc 1 357 32 is_stmt 0 discriminator 2 view .LVU198
+ 898 00a4 1B02     		lsls	r3, r3, #8
+ 899 00a6 1A4A     		ldr	r2, .L52+16
+ 900 00a8 1360     		str	r3, [r2]
+ 358:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 901              		.loc 1 358 13 is_stmt 1 discriminator 2 view .LVU199
+ 358:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 902              		.loc 1 358 32 is_stmt 0 discriminator 2 view .LVU200
+ 903 00aa 03F4E063 		and	r3, r3, #1792
+ 904 00ae 1360     		str	r3, [r2]
+ 362:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         }
+ 905              		.loc 1 362 13 is_stmt 1 discriminator 2 view .LVU201
+ 362:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         }
+ 906              		.loc 1 362 43 is_stmt 0 discriminator 2 view .LVU202
+ 907 00b0 019B     		ldr	r3, [sp, #4]
+ 908 00b2 DBB2     		uxtb	r3, r3
+ 909 00b4 144A     		ldr	r2, .L52+8
+ 910 00b6 1370     		strb	r3, [r2]
+ 911              	.LBE58:
+ 367:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     portNVIC_SHPR3_REG |= portNVIC_SYSTICK_PRI;
+ 912              		.loc 1 367 5 is_stmt 1 discriminator 2 view .LVU203
+ 367:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     portNVIC_SHPR3_REG |= portNVIC_SYSTICK_PRI;
+ 913              		.loc 1 367 24 is_stmt 0 discriminator 2 view .LVU204
+ 914 00b8 4FF0E024 		mov	r4, #-536813568
+ 915 00bc D4F8203D 		ldr	r3, [r4, #3360]
+ 916 00c0 43F47003 		orr	r3, r3, #15728640
+ 917 00c4 C4F8203D 		str	r3, [r4, #3360]
+ 368:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 918              		.loc 1 368 5 is_stmt 1 discriminator 2 view .LVU205
+ 368:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 919              		.loc 1 368 24 is_stmt 0 discriminator 2 view .LVU206
+ 920 00c8 D4F8203D 		ldr	r3, [r4, #3360]
+ 921 00cc 43F07043 		orr	r3, r3, #-268435456
+ 922 00d0 C4F8203D 		str	r3, [r4, #3360]
+ 372:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 923              		.loc 1 372 5 is_stmt 1 discriminator 2 view .LVU207
+ 924 00d4 FFF7FEFF 		bl	vPortSetupTimerInterrupt
+ 925              	.LVL27:
+ 375:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 926              		.loc 1 375 5 discriminator 2 view .LVU208
+ 375:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 927              		.loc 1 375 23 is_stmt 0 discriminator 2 view .LVU209
+ 928 00d8 0025     		movs	r5, #0
+ 929 00da 0E4B     		ldr	r3, .L52+20
+ 930 00dc 1D60     		str	r5, [r3]
+ 378:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 931              		.loc 1 378 5 is_stmt 1 discriminator 2 view .LVU210
+ 932 00de FFF7FEFF 		bl	vPortEnableVFP
+ 933              	.LVL28:
+ 381:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 934              		.loc 1 381 5 discriminator 2 view .LVU211
+ 381:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 935              		.loc 1 381 20 is_stmt 0 discriminator 2 view .LVU212
+ 936 00e2 D4F8343F 		ldr	r3, [r4, #3892]
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 37
+
+
+ 937 00e6 43F04043 		orr	r3, r3, #-1073741824
+ 938 00ea C4F8343F 		str	r3, [r4, #3892]
+ 384:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 939              		.loc 1 384 5 is_stmt 1 discriminator 2 view .LVU213
+ 940 00ee FFF7FEFF 		bl	prvPortStartFirstTask
+ 941              	.LVL29:
+ 392:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     prvTaskExitError();
+ 942              		.loc 1 392 5 discriminator 2 view .LVU214
+ 943 00f2 FFF7FEFF 		bl	vTaskSwitchContext
+ 944              	.LVL30:
+ 393:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 945              		.loc 1 393 5 discriminator 2 view .LVU215
+ 946 00f6 FFF7FEFF 		bl	prvTaskExitError
+ 947              	.LVL31:
+ 396:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** }
+ 948              		.loc 1 396 5 discriminator 2 view .LVU216
+ 397:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 949              		.loc 1 397 1 is_stmt 0 discriminator 2 view .LVU217
+ 950 00fa 2846     		mov	r0, r5
+ 951 00fc 03B0     		add	sp, sp, #12
+ 952              	.LCFI7:
+ 953              		.cfi_def_cfa_offset 12
+ 954              		@ sp needed
+ 955 00fe 30BD     		pop	{r4, r5, pc}
+ 956              	.L53:
+ 957              		.align	2
+ 958              	.L52:
+ 959 0100 71C20F41 		.word	1091551857
+ 960 0104 70C20F41 		.word	1091551856
+ 961 0108 00E400E0 		.word	-536812544
+ 962 010c 00000000 		.word	.LANCHOR1
+ 963 0110 00000000 		.word	.LANCHOR2
+ 964 0114 00000000 		.word	.LANCHOR0
+ 965              		.cfi_endproc
+ 966              	.LFE9:
+ 968              		.section	.text.vPortValidateInterruptPriority,"ax",%progbits
+ 969              		.align	1
+ 970              		.global	vPortValidateInterruptPriority
+ 971              		.syntax unified
+ 972              		.thumb
+ 973              		.thumb_func
+ 975              	vPortValidateInterruptPriority:
+ 976              	.LFB17:
+ 729:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** /*-----------------------------------------------------------*/
+ 730:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 731:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** #if ( configASSERT_DEFINED == 1 )
+ 732:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 733:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     void vPortValidateInterruptPriority( void )
+ 734:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     {
+ 977              		.loc 1 734 5 is_stmt 1 view -0
+ 978              		.cfi_startproc
+ 979              		@ args = 0, pretend = 0, frame = 0
+ 980              		@ frame_needed = 0, uses_anonymous_args = 0
+ 981              		@ link register save eliminated.
+ 735:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         uint32_t ulCurrentInterrupt;
+ 982              		.loc 1 735 9 view .LVU219
+ 736:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         uint8_t ucCurrentPriority;
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 38
+
+
+ 983              		.loc 1 736 9 view .LVU220
+ 737:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 738:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         /* Obtain the number of the currently executing interrupt. */
+ 739:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         __asm volatile ( "mrs %0, ipsr" : "=r" ( ulCurrentInterrupt )::"memory" );
+ 984              		.loc 1 739 9 view .LVU221
+ 985              		.syntax unified
+ 986              	@ 739 "FreeRTOS/portable/GCC/ARM_CM4F/port.c" 1
+ 987 0000 EFF30583 		mrs r3, ipsr
+ 988              	@ 0 "" 2
+ 989              	.LVL32:
+ 740:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 741:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         /* Is the interrupt number a user defined interrupt? */
+ 742:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         if( ulCurrentInterrupt >= portFIRST_USER_INTERRUPT_NUMBER )
+ 990              		.loc 1 742 9 view .LVU222
+ 991              		.loc 1 742 11 is_stmt 0 view .LVU223
+ 992              		.thumb
+ 993              		.syntax unified
+ 994 0004 0F2B     		cmp	r3, #15
+ 995 0006 0FD9     		bls	.L55
+ 743:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         {
+ 744:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Look up the interrupt's priority. */
+ 745:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             ucCurrentPriority = pcInterruptPriorityRegisters[ ulCurrentInterrupt ];
+ 996              		.loc 1 745 13 is_stmt 1 view .LVU224
+ 997              		.loc 1 745 61 is_stmt 0 view .LVU225
+ 998 0008 114A     		ldr	r2, .L59
+ 999              		.loc 1 745 31 view .LVU226
+ 1000 000a 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 1001              	.LVL33:
+ 1002              		.loc 1 745 31 view .LVU227
+ 1003 000c DBB2     		uxtb	r3, r3
+ 1004              	.LVL34:
+ 746:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 747:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* The following assertion will fail if a service routine (ISR) for
+ 748:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * an interrupt that has been assigned a priority above
+ 749:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * configMAX_SYSCALL_INTERRUPT_PRIORITY calls an ISR safe FreeRTOS API
+ 750:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * function.  ISR safe FreeRTOS API functions must *only* be called
+ 751:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * from interrupts that have been assigned a priority at or below
+ 752:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * configMAX_SYSCALL_INTERRUPT_PRIORITY.
+ 753:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              *
+ 754:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * Numerically low interrupt priority numbers represent logically high
+ 755:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * interrupt priorities, therefore the priority of the interrupt must
+ 756:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * be set to a value equal to or numerically *higher* than
+ 757:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * configMAX_SYSCALL_INTERRUPT_PRIORITY.
+ 758:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              *
+ 759:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * Interrupts that	use the FreeRTOS API must not be left at their
+ 760:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * default priority of	zero as that is the highest possible priority,
+ 761:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * which is guaranteed to be above configMAX_SYSCALL_INTERRUPT_PRIORITY,
+ 762:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * and	therefore also guaranteed to be invalid.
+ 763:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              *
+ 764:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * FreeRTOS maintains separate thread and ISR API functions to ensure
+ 765:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * interrupt entry is as fast and simple as possible.
+ 766:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              *
+ 767:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * The following links provide detailed information:
+ 768:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * https://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html
+ 769:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****              * https://www.FreeRTOS.org/FAQHelp.html */
+ 770:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             configASSERT( ucCurrentPriority >= ucMaxSysCallPriority );
+ 1005              		.loc 1 770 13 is_stmt 1 view .LVU228
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 39
+
+
+ 1006 000e 114A     		ldr	r2, .L59+4
+ 1007 0010 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 1008 0012 9A42     		cmp	r2, r3
+ 1009 0014 08D9     		bls	.L55
+ 1010              		.loc 1 770 13 view .LVU229
+ 1011              	.LBB59:
+ 1012              	.LBI59:
+ 193:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     {
+ 1013              		.loc 2 193 34 view .LVU230
+ 1014              	.LBB60:
+ 195:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 1015              		.loc 2 195 9 view .LVU231
+ 197:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         (
+ 1016              		.loc 2 197 9 view .LVU232
+ 1017              		.syntax unified
+ 1018              	@ 197 "FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h" 1
+ 1019 0016 4FF05003 			mov r3, #80												
+ 1020 001a 83F31188 		msr basepri, r3											
+ 1021 001e BFF36F8F 		isb														
+ 1022 0022 BFF34F8F 		dsb														
+ 1023              	
+ 1024              	@ 0 "" 2
+ 1025              	.LVL35:
+ 1026              		.thumb
+ 1027              		.syntax unified
+ 1028              	.L56:
+ 197:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         (
+ 1029              		.loc 2 197 9 is_stmt 0 view .LVU233
+ 1030              	.LBE60:
+ 1031              	.LBE59:
+ 1032              		.loc 1 770 13 is_stmt 1 discriminator 1 view .LVU234
+ 1033              		.loc 1 770 13 discriminator 1 view .LVU235
+ 1034              		.loc 1 770 13 discriminator 1 view .LVU236
+ 1035 0026 FEE7     		b	.L56
+ 1036              	.L55:
+ 1037              		.loc 1 770 70 discriminator 2 view .LVU237
+ 771:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         }
+ 772:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 773:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         /* Priority grouping:  The interrupt controller (NVIC) allows the bits
+ 774:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * that define each interrupt's priority to be split between bits that
+ 775:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * define the interrupt's pre-emption priority bits and bits that define
+ 776:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * the interrupt's sub-priority.  For simplicity all bits must be defined
+ 777:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * to be pre-emption priority bits.  The following assertion will fail if
+ 778:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * this is not the case (if some bits represent a sub-priority).
+ 779:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          *
+ 780:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * If the application only uses CMSIS libraries for interrupt
+ 781:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * configuration then the correct setting can be achieved on all Cortex-M
+ 782:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * devices by calling NVIC_SetPriorityGrouping( 0 ); before starting the
+ 783:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * scheduler.  Note however that some vendor specific peripheral libraries
+ 784:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * assume a non-zero priority group setting, in which cases using a value
+ 785:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****          * of zero will result in unpredictable behaviour. */
+ 786:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         configASSERT( ( portAIRCR_REG & portPRIORITY_GROUP_MASK ) <= ulMaxPRIGROUPValue );
+ 1038              		.loc 1 786 9 discriminator 2 view .LVU238
+ 1039 0028 4FF0E023 		mov	r3, #-536813568
+ 1040 002c D3F80C3D 		ldr	r3, [r3, #3340]
+ 1041 0030 03F4E063 		and	r3, r3, #1792
+ 1042 0034 084A     		ldr	r2, .L59+8
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 40
+
+
+ 1043 0036 1268     		ldr	r2, [r2]
+ 1044 0038 9342     		cmp	r3, r2
+ 1045 003a 08D9     		bls	.L54
+ 1046              		.loc 1 786 9 view .LVU239
+ 1047              	.LBB61:
+ 1048              	.LBI61:
+ 193:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     {
+ 1049              		.loc 2 193 34 view .LVU240
+ 1050              	.LBB62:
+ 195:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 1051              		.loc 2 195 9 view .LVU241
+ 197:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         (
+ 1052              		.loc 2 197 9 view .LVU242
+ 1053              		.syntax unified
+ 1054              	@ 197 "FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h" 1
+ 1055 003c 4FF05003 			mov r3, #80												
+ 1056 0040 83F31188 		msr basepri, r3											
+ 1057 0044 BFF36F8F 		isb														
+ 1058 0048 BFF34F8F 		dsb														
+ 1059              	
+ 1060              	@ 0 "" 2
+ 1061              	.LVL36:
+ 1062              		.thumb
+ 1063              		.syntax unified
+ 1064              	.L58:
+ 197:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         (
+ 1065              		.loc 2 197 9 is_stmt 0 view .LVU243
+ 1066              	.LBE62:
+ 1067              	.LBE61:
+ 1068              		.loc 1 786 9 is_stmt 1 discriminator 2 view .LVU244
+ 1069              		.loc 1 786 9 discriminator 2 view .LVU245
+ 1070              		.loc 1 786 9 discriminator 2 view .LVU246
+ 1071 004c FEE7     		b	.L58
+ 1072              	.L54:
+ 787:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     }
+ 1073              		.loc 1 787 5 is_stmt 0 view .LVU247
+ 1074 004e 7047     		bx	lr
+ 1075              	.L60:
+ 1076              		.align	2
+ 1077              	.L59:
+ 1078 0050 F0E300E0 		.word	-536812560
+ 1079 0054 00000000 		.word	.LANCHOR1
+ 1080 0058 00000000 		.word	.LANCHOR2
+ 1081              		.cfi_endproc
+ 1082              	.LFE17:
+ 1084              		.section	.text.vSetVarulMaxPRIGROUPValue,"ax",%progbits
+ 1085              		.align	1
+ 1086              		.global	vSetVarulMaxPRIGROUPValue
+ 1087              		.syntax unified
+ 1088              		.thumb
+ 1089              		.thumb_func
+ 1091              	vSetVarulMaxPRIGROUPValue:
+ 1092              	.LFB18:
+ 788:FreeRTOS/portable/GCC/ARM_CM4F/port.c **** 
+ 789:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     void vSetVarulMaxPRIGROUPValue( void )
+ 790:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     {
+ 1093              		.loc 1 790 5 is_stmt 1 view -0
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 41
+
+
+ 1094              		.cfi_startproc
+ 1095              		@ args = 0, pretend = 0, frame = 8
+ 1096              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1097              		@ link register save eliminated.
+ 1098 0000 82B0     		sub	sp, sp, #8
+ 1099              	.LCFI8:
+ 1100              		.cfi_def_cfa_offset 8
+ 791:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         volatile uint8_t * const pucFirstUserPriorityRegister = ( volatile uint8_t * const ) ( port
+ 1101              		.loc 1 791 9 view .LVU249
+ 1102              	.LVL37:
+ 792:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         volatile uint8_t ucMaxPriorityValue;
+ 1103              		.loc 1 792 9 view .LVU250
+ 793:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         /* Determine the number of priority bits available.  First write to all
+ 794:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         possible bits. */
+ 795:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         *pucFirstUserPriorityRegister = portMAX_8_BIT_VALUE;
+ 1104              		.loc 1 795 9 view .LVU251
+ 1105              		.loc 1 795 39 is_stmt 0 view .LVU252
+ 1106 0002 174B     		ldr	r3, .L67
+ 1107 0004 FF22     		movs	r2, #255
+ 1108 0006 1A70     		strb	r2, [r3]
+ 796:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         /* Read the value back to see how many bits stuck. */
+ 797:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         ucMaxPriorityValue = *pucFirstUserPriorityRegister;
+ 1109              		.loc 1 797 9 is_stmt 1 view .LVU253
+ 1110              		.loc 1 797 30 is_stmt 0 view .LVU254
+ 1111 0008 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1112 000a DBB2     		uxtb	r3, r3
+ 1113              		.loc 1 797 28 view .LVU255
+ 1114 000c 8DF80730 		strb	r3, [sp, #7]
+ 798:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         /* Calculate the maximum acceptable priority group value for the number
+ 799:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         of bits read back. */
+ 800:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         ulMaxPRIGROUPValue = portMAX_PRIGROUP_BITS;
+ 1115              		.loc 1 800 9 is_stmt 1 view .LVU256
+ 1116              		.loc 1 800 28 is_stmt 0 view .LVU257
+ 1117 0010 144B     		ldr	r3, .L67+4
+ 1118 0012 0722     		movs	r2, #7
+ 1119 0014 1A60     		str	r2, [r3]
+ 801:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         while( ( ucMaxPriorityValue & portTOP_BIT_OF_BYTE ) == portTOP_BIT_OF_BYTE )
+ 1120              		.loc 1 801 9 is_stmt 1 view .LVU258
+ 1121              		.loc 1 801 14 is_stmt 0 view .LVU259
+ 1122 0016 09E0     		b	.L62
+ 1123              	.L63:
+ 802:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         {
+ 803:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             ulMaxPRIGROUPValue--;
+ 1124              		.loc 1 803 13 is_stmt 1 view .LVU260
+ 1125              		.loc 1 803 31 is_stmt 0 view .LVU261
+ 1126 0018 124A     		ldr	r2, .L67+4
+ 1127 001a 1368     		ldr	r3, [r2]
+ 1128 001c 013B     		subs	r3, r3, #1
+ 1129 001e 1360     		str	r3, [r2]
+ 804:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             ucMaxPriorityValue <<= ( uint8_t ) 0x01;
+ 1130              		.loc 1 804 13 is_stmt 1 view .LVU262
+ 1131              		.loc 1 804 32 is_stmt 0 view .LVU263
+ 1132 0020 9DF80730 		ldrb	r3, [sp, #7]	@ zero_extendqisi2
+ 1133 0024 5B00     		lsls	r3, r3, #1
+ 1134 0026 DBB2     		uxtb	r3, r3
+ 1135 0028 8DF80730 		strb	r3, [sp, #7]
+ 1136              	.L62:
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 42
+
+
+ 801:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         while( ( ucMaxPriorityValue & portTOP_BIT_OF_BYTE ) == portTOP_BIT_OF_BYTE )
+ 1137              		.loc 1 801 14 is_stmt 1 view .LVU264
+ 801:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         while( ( ucMaxPriorityValue & portTOP_BIT_OF_BYTE ) == portTOP_BIT_OF_BYTE )
+ 1138              		.loc 1 801 37 is_stmt 0 view .LVU265
+ 1139 002c 9DF80730 		ldrb	r3, [sp, #7]	@ zero_extendqisi2
+ 801:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         while( ( ucMaxPriorityValue & portTOP_BIT_OF_BYTE ) == portTOP_BIT_OF_BYTE )
+ 1140              		.loc 1 801 14 view .LVU266
+ 1141 0030 13F0800F 		tst	r3, #128
+ 1142 0034 F0D1     		bne	.L63
+ 805:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         }
+ 806:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     #ifdef __NVIC_PRIO_BITS
+ 807:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         {
+ 808:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Check the CMSIS configuration that defines the number of
+ 809:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             priority bits matches the number of priority bits actually queried
+ 810:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             from the hardware. */
+ 811:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             configASSERT( ( portMAX_PRIGROUP_BITS - ulMaxPRIGROUPValue ) == __NVIC_PRIO_BITS );
+ 812:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         }
+ 813:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     #endif
+ 814:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     #ifdef configPRIO_BITS
+ 815:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         {
+ 816:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             /* Check the FreeRTOS configuration that defines the number of
+ 817:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             priority bits matches the number of priority bits actually queried
+ 818:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             from the hardware. */
+ 819:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****             configASSERT( ( portMAX_PRIGROUP_BITS - ulMaxPRIGROUPValue ) == configPRIO_BITS );
+ 1143              		.loc 1 819 13 is_stmt 1 view .LVU267
+ 1144 0036 0B4B     		ldr	r3, .L67+4
+ 1145 0038 1B68     		ldr	r3, [r3]
+ 1146 003a 032B     		cmp	r3, #3
+ 1147 003c 08D0     		beq	.L64
+ 1148              		.loc 1 819 13 view .LVU268
+ 1149              	.LBB63:
+ 1150              	.LBI63:
+ 193:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****     {
+ 1151              		.loc 2 193 34 view .LVU269
+ 1152              	.LBB64:
+ 195:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h **** 
+ 1153              		.loc 2 195 9 view .LVU270
+ 197:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         (
+ 1154              		.loc 2 197 9 view .LVU271
+ 1155              		.syntax unified
+ 1156              	@ 197 "FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h" 1
+ 1157 003e 4FF05003 			mov r3, #80												
+ 1158 0042 83F31188 		msr basepri, r3											
+ 1159 0046 BFF36F8F 		isb														
+ 1160 004a BFF34F8F 		dsb														
+ 1161              	
+ 1162              	@ 0 "" 2
+ 1163              	.LVL38:
+ 1164              		.thumb
+ 1165              		.syntax unified
+ 1166              	.L65:
+ 197:FreeRTOS/portable/GCC/ARM_CM4F/portmacro.h ****         (
+ 1167              		.loc 2 197 9 is_stmt 0 view .LVU272
+ 1168              	.LBE64:
+ 1169              	.LBE63:
+ 1170              		.loc 1 819 13 is_stmt 1 discriminator 1 view .LVU273
+ 1171              		.loc 1 819 13 discriminator 1 view .LVU274
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 43
+
+
+ 1172              		.loc 1 819 13 discriminator 1 view .LVU275
+ 1173 004e FEE7     		b	.L65
+ 1174              	.L64:
+ 1175              		.loc 1 819 94 discriminator 2 view .LVU276
+ 820:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         }
+ 821:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     #endif
+ 822:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         /* Shift the priority group value back to its position within the AIRCR
+ 823:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         register. */
+ 824:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         ulMaxPRIGROUPValue <<= portPRIGROUP_SHIFT;
+ 1176              		.loc 1 824 9 discriminator 2 view .LVU277
+ 1177              		.loc 1 824 28 is_stmt 0 discriminator 2 view .LVU278
+ 1178 0050 1B02     		lsls	r3, r3, #8
+ 1179 0052 044A     		ldr	r2, .L67+4
+ 1180 0054 1360     		str	r3, [r2]
+ 825:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****         ulMaxPRIGROUPValue &= portPRIORITY_GROUP_MASK;
+ 1181              		.loc 1 825 9 is_stmt 1 discriminator 2 view .LVU279
+ 1182              		.loc 1 825 28 is_stmt 0 discriminator 2 view .LVU280
+ 1183 0056 03F4E063 		and	r3, r3, #1792
+ 1184 005a 1360     		str	r3, [r2]
+ 826:FreeRTOS/portable/GCC/ARM_CM4F/port.c ****     }
+ 1185              		.loc 1 826 5 discriminator 2 view .LVU281
+ 1186 005c 02B0     		add	sp, sp, #8
+ 1187              	.LCFI9:
+ 1188              		.cfi_def_cfa_offset 0
+ 1189              		@ sp needed
+ 1190 005e 7047     		bx	lr
+ 1191              	.L68:
+ 1192              		.align	2
+ 1193              	.L67:
+ 1194 0060 00E400E0 		.word	-536812544
+ 1195 0064 00000000 		.word	.LANCHOR2
+ 1196              		.cfi_endproc
+ 1197              	.LFE18:
+ 1199              		.section	.bss.ucMaxSysCallPriority,"aw",%nobits
+ 1200              		.set	.LANCHOR1,. + 0
+ 1203              	ucMaxSysCallPriority:
+ 1204 0000 00       		.space	1
+ 1205              		.section	.bss.ulMaxPRIGROUPValue,"aw",%nobits
+ 1206              		.align	2
+ 1207              		.set	.LANCHOR2,. + 0
+ 1210              	ulMaxPRIGROUPValue:
+ 1211 0000 00000000 		.space	4
+ 1212              		.section	.data.uxCriticalNesting,"aw"
+ 1213              		.align	2
+ 1214              		.set	.LANCHOR0,. + 0
+ 1217              	uxCriticalNesting:
+ 1218 0000 AAAAAAAA 		.word	-1431655766
+ 1219              		.text
+ 1220              	.Letext0:
+ 1221              		.file 3 "d:\\gcc-arm-none-eabi-10.3-2021.10\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 1222              		.file 4 "d:\\gcc-arm-none-eabi-10.3-2021.10\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 1223              		.file 5 "FreeRTOS/include/projdefs.h"
+ 1224              		.file 6 "Core/Inc/FreeRTOSConfig.h"
+ 1225              		.file 7 "SEGGER/SEGGER/SEGGER_SYSVIEW.h"
+ 1226              		.file 8 "FreeRTOS/include/task.h"
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 44
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 port.c
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:20     .text.prvTaskExitError:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:25     .text.prvTaskExitError:00000000 prvTaskExitError
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:112    .text.prvTaskExitError:0000003c $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:117    .text.prvPortStartFirstTask:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:122    .text.prvPortStartFirstTask:00000000 prvPortStartFirstTask
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:144    .text.prvPortStartFirstTask:00000022 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:144    .text.prvPortStartFirstTask:00000024 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:154    .text.vPortEnableVFP:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:159    .text.vPortEnableVFP:00000000 vPortEnableVFP
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:175    .text.vPortEnableVFP:0000000e $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:175    .text.vPortEnableVFP:00000010 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:185    .text.pxPortInitialiseStack:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:191    .text.pxPortInitialiseStack:00000000 pxPortInitialiseStack
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:241    .text.pxPortInitialiseStack:00000028 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:246    .text.SVC_Handler:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:252    .text.SVC_Handler:00000000 SVC_Handler
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:273    .text.SVC_Handler:00000020 pxCurrentTCBConst2
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:273    .text.SVC_Handler:00000020 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:283    .text.vPortEndScheduler:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:289    .text.vPortEndScheduler:00000000 vPortEndScheduler
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:333    .text.vPortEndScheduler:00000020 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:338    .text.vPortEnterCritical:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:344    .text.vPortEnterCritical:00000000 vPortEnterCritical
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:418    .text.vPortEnterCritical:00000040 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:423    .text.vPortExitCritical:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:429    .text.vPortExitCritical:00000000 vPortExitCritical
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:499    .text.vPortExitCritical:00000028 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:504    .text.PendSV_Handler:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:510    .text.PendSV_Handler:00000000 PendSV_Handler
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:559    .text.PendSV_Handler:00000060 pxCurrentTCBConst
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:559    .text.PendSV_Handler:00000060 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:569    .text.SysTick_Handler:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:575    .text.SysTick_Handler:00000000 SysTick_Handler
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:652    .text.vPortSetupTimerInterrupt:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:658    .text.vPortSetupTimerInterrupt:00000000 vPortSetupTimerInterrupt
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:693    .text.vPortSetupTimerInterrupt:00000020 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:699    .text.xPortStartScheduler:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:705    .text.xPortStartScheduler:00000000 xPortStartScheduler
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:959    .text.xPortStartScheduler:00000100 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:969    .text.vPortValidateInterruptPriority:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:975    .text.vPortValidateInterruptPriority:00000000 vPortValidateInterruptPriority
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:1078   .text.vPortValidateInterruptPriority:00000050 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:1085   .text.vSetVarulMaxPRIGROUPValue:00000000 $t
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:1091   .text.vSetVarulMaxPRIGROUPValue:00000000 vSetVarulMaxPRIGROUPValue
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:1194   .text.vSetVarulMaxPRIGROUPValue:00000060 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:1203   .bss.ucMaxSysCallPriority:00000000 ucMaxSysCallPriority
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:1204   .bss.ucMaxSysCallPriority:00000000 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:1206   .bss.ulMaxPRIGROUPValue:00000000 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:1210   .bss.ulMaxPRIGROUPValue:00000000 ulMaxPRIGROUPValue
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:1213   .data.uxCriticalNesting:00000000 $d
+C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s:1217   .data.uxCriticalNesting:00000000 uxCriticalNesting
+
+UNDEFINED SYMBOLS
+pxCurrentTCB
+vTaskSwitchContext
+ARM GAS  C:\Users\LINZHE~1\AppData\Local\Temp\ccIm2VCe.s 			page 45
+
+
+SEGGER_SYSVIEW_RecordEnterISR
+xTaskIncrementTick
+SEGGER_SYSVIEW_RecordExitISRToScheduler
+SEGGER_SYSVIEW_RecordExitISR
+SystemCoreClock
