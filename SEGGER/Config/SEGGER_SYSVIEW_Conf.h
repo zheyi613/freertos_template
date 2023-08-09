@@ -82,10 +82,8 @@ Additional information:
 
 #if (SEGGER_UART_REC == 1)
 	extern void SEGGER_UART_init(unsigned long baud);
-	// extern void HIF_UART_EnableTXEInterrupt(void);
-	// #define SEGGER_SYSVIEW_ON_EVENT_RECORDED(x)	HIF_UART_EnableTXEInterrupt()
-  extern void SEGGER_UART_TX_Callback();
-  #define SEGGER_SYSVIEW_ON_EVENT_RECORDED(x) SEGGER_UART_TX_Callback()
+	extern void HIF_UART_EnableTXEInterrupt(void);
+	#define SEGGER_SYSVIEW_ON_EVENT_RECORDED(x)	HIF_UART_EnableTXEInterrupt()
 #endif
 
 
