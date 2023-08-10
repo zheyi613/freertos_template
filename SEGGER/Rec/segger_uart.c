@@ -213,6 +213,7 @@ void HIF_UART_Init(uint32_t Baudrate, UART_ON_TX_FUNC_P cbOnTx, UART_ON_RX_FUNC_
   GPIOA->OSPEEDR = v;
   //
   // Configure USART RX/TX pins for alternate function usage
+  //
   v  = GPIOA->MODER;
   v &= ~((3UL << (USART_TX_BIT << 1)) | (3UL << (USART_RX_BIT << 1)));
   v |=  ((2UL << (USART_TX_BIT << 1)) | (2UL << (USART_RX_BIT << 1)));         // PA10: alternate function
