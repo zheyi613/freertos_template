@@ -1,3 +1,9 @@
+/**
+ * @file segger_uart_dma.c
+ * @author zheyi613 (zheyi880613@gmail.com)
+ * @brief Terminal control for Flasher using USART1(PA9/PA10) in DMA mode
+ * @date 2023-08-14
+ */
 
 /*
  * This source file is modified from
