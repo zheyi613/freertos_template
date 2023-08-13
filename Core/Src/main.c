@@ -103,7 +103,7 @@ int main(void)
   task1_count = 0;
 
   vSetVarulMaxPRIGROUPValue();
-  SEGGER_UART_init(1500000);
+  SEGGER_UART_init(500000);
   SEGGER_SYSVIEW_Conf();
 
   status = xTaskCreate(task1, "task1", 200, NULL, 2, &task1_handler);
