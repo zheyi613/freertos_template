@@ -28,11 +28,12 @@
 #define _SERVER_HELLO_SIZE (4)
 #define _TARGET_HELLO_SIZE (4)
 
-#define TX_BUFFER_SIZE  128
+#define TX_BUFFER_SIZE  512
 
-char tx_buffer[TX_BUFFER_SIZE];
-char rx_byte;
-uint8_t rec_tx;
+static char tx_buffer[TX_BUFFER_SIZE];
+static char rx_byte;
+static uint8_t rec_tx;
+static uint16_t size;
 
 /* 
  * "Hello" message expected by SysView: [ 'S', 'V',
@@ -95,8 +96,8 @@ void USART_DMA_init(uint32_t baudrate, char *tx_buf, char *rx_buf)
                 | DMA_SxCR_TCIE;      /* Transfer complete interrupt enable */
 
         /* Setup callbacks which are called by ISR handler and enable
-         * interrupt in NVIC (priority: 6) */
-        NVIC_SetPriority(DMA2_Stream7_IRQn, 6);
+         * interrupt in NVIC (priority: 8) */
+        NVIC_SetPriority(DMA2_Stream7_IRQn, 8);
         NVIC_EnableIRQ(DMA2_Stream7_IRQn);
 
         /*   Initialize RX DMA (Stream 5, CH4)   */
@@ -131,8 +132,8 @@ void USART_DMA_init(uint32_t baudrate, char *tx_buf, char *rx_buf)
                 | DMA_SxCR_TCIE;      /* Transfer complete interrupt enable */
 
         /* Setup callbacks which are called by ISR handler and enable
-         * interrupt in NVIC (priority: 6) */
-        NVIC_SetPriority(DMA2_Stream5_IRQn, 6);
+         * interrupt in NVIC (priority: 8) */
+        NVIC_SetPriority(DMA2_Stream5_IRQn, 8);
         NVIC_EnableIRQ(DMA2_Stream5_IRQn);
 
         /* Configure USART RX/TX pins for alternate function (AF7) */
@@ -170,6 +171,11 @@ void USART_DMA_init(uint32_t baudrate, char *tx_buf, char *rx_buf)
                 | USART_CR1_RE;       /* Receiver enable */
 
         USART_REG->CR2 = 0;     /* STOP bits: 1 Stop bit */
+
+        /* Setup callbacks which are called by ISR handler and enable
+         * interrupt in NVIC (priority: 8) */
+        NVIC_SetPriority(USART1_IRQn, 8);
+        NVIC_EnableIRQ(USART1_IRQn);
         
         /* Set baudrate */
         div = (UART_BASECLK << 1) / baudrate;
@@ -187,9 +193,6 @@ void USART_DMA_init(uint32_t baudrate, char *tx_buf, char *rx_buf)
         /* Enable RX DMA */
         DMA2_Stream5->CR |= DMA_SxCR_EN;
 
-        /* Clear TC bit in the SR */
-        USART_REG->SR &= ~USART_SR_TC;
-
         /* Select three sample bit method and Enable DMA TX/RX */
         USART_REG->CR3 = USART_CR3_DMAT | USART_CR3_DMAR;
 
@@ -201,26 +204,20 @@ void SEGGER_UART_init(unsigned long baudrate)
         rec_tx = 0;
 }
 
-void USART_DMA_transmit(uint16_t size)
+static inline void USART_DMA_transmit(void)
 {
         /* Set number of data items to transfer */
         DMA2_Stream7->NDTR = (uint32_t)size;
-
-        /* Read SR to clear TC and Check if last transmission is not done */
-        while (!(USART_REG->SR & USART_SR_TC));
-
-        /* Enable DMA */
-        DMA2_Stream7->CR |= DMA_SxCR_EN;
+        /* Enable USART TC interrupt to wait last transmission */
+        USART_REG->CR1 |= USART_CR1_TCIE;
 }
 
-void SEGGER_UART_transmit(void)
+static inline void SEGGER_UART_transmit(void)
 {
-        uint16_t size;
-
         size = SEGGER_RTT_ReadUpBufferNoLock(_SVInfo.ChannelID, tx_buffer,
                                              TX_BUFFER_SIZE);
         if (size)
-                USART_DMA_transmit(size);
+                USART_DMA_transmit();
         else
                 rec_tx = 0;
 }
@@ -245,7 +242,8 @@ void DMA2_Stream5_IRQHandler(void)
                 if (_SVInfo.NumBytesHelloSent < _TARGET_HELLO_SIZE) {
                         memcpy(tx_buffer, _abHelloMsg, _TARGET_HELLO_SIZE);
                         _SVInfo.NumBytesHelloSent += 4;
-                        USART_DMA_transmit(_TARGET_HELLO_SIZE);
+                        size = _TARGET_HELLO_SIZE;
+                        USART_DMA_transmit();
                 }
                 return;
         }
@@ -265,8 +263,18 @@ void DMA2_Stream7_IRQHandler(void)
         DMA2->HIFCR |= DMA_HISR_TCIF7; /* Clear TCIF */
 
         /* Moving data to DR is completed, but transmit is not done.
-         * User need to check TC flag by software. */
+         * User need to check TC flag by software of hardware interrupt. */
         if (rec_tx)
                 SEGGER_UART_transmit();
+}
+
+void USART1_IRQHandler(void)
+{
+        /* Disable USART TC interrupt */
+        USART_REG->CR1 &= ~USART_CR1_TCIE;
+        /* Read USART SR to clear TC */
+        USART_REG->SR;
+        /* Enable DMA */
+        DMA2_Stream7->CR |= DMA_SxCR_EN;
 }
 #endif
